@@ -3,12 +3,13 @@ server:
 
 spring:
   application:
-    name: HYBRID-BOOKING-SERVICE
+
+    name: HYBRID_BOOKING-SERVICE
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/hybrid_booking_db
+    url: jdbc:postgresql://localhost:5432/booking_service_db
     username: postgres
-    password: 123
+    password: 20229
   jpa:
     hibernate:
       ddl-auto: update
@@ -26,3 +27,13 @@ eureka:
       default-url: ${EUREKA_URI:http://localhost:8761/eureka/}
     instance:
       preferIpAddress: true
+
+
+jwt:
+  secret:
+    key: 753778214125442A472D4B6150645367566B59703373367639792F423F452848
+  access:
+    expiry: 3000000
+  refresh:
+    expiry: 300000000
+
