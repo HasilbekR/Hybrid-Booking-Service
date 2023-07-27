@@ -1,6 +1,6 @@
 package com.example.hybridbookingservice.dto.queue;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +14,10 @@ import java.util.UUID;
 
 public class QueueCreateDto {
 
-    @NotBlank(message = "userId must not be empty")
+    @NotNull(message = "userId must not be empty")
     private UUID userId;
 
-    @NotBlank(message = "doctorId must not be empty")
+    @NotNull(message = "doctorId must not be empty")
     private UUID doctorId;
 
 

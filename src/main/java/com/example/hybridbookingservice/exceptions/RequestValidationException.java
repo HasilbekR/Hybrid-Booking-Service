@@ -5,15 +5,19 @@ import org.springframework.validation.ObjectError;
 import java.util.List;
 
 public class RequestValidationException extends RuntimeException {
-    private final String message;
+    String message;
 
-    public RequestValidationException(List<ObjectError> errorList) {
-        StringBuilder sb = new StringBuilder();
+    public RequestValidationException(List<ObjectError> allErrors) {
+        StringBuilder errorMessage = new StringBuilder();
+        for (ObjectError allError : allErrors) {
+            errorMessage.append(allError.getDefaultMessage()).append("\n");
 
-        for (ObjectError error:errorList) {
-            sb.append(error.getDefaultMessage()).append("\n");
         }
-        this.message = sb.toString();
+        this.message = errorMessage.toString();
+    }
+
+    public String getMessage() {
+        return message;
     }
 
 }

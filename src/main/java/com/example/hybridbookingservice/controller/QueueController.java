@@ -3,16 +3,13 @@ package com.example.hybridbookingservice.controller;
 import com.example.hybridbookingservice.dto.queue.QueueCreateDto;
 import com.example.hybridbookingservice.dto.queue.QueueUpdateDto;
 import com.example.hybridbookingservice.entity.queue.QueueEntity;
-import com.example.hybridbookingservice.exceptions.RequestValidationException;
 import com.example.hybridbookingservice.service.queue.QueueService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,26 +24,23 @@ public class QueueController {
     public QueueEntity addQueue(
             @Valid @RequestBody QueueCreateDto queueCreateDto,
             BindingResult bindingResult
-    ) throws RequestValidationException {
-        if (bindingResult.hasErrors()) {
-            List<ObjectError> allErrors = bindingResult.getAllErrors();
-            throw new RequestValidationException(allErrors);
-        }
-        return queueService.addQueue(queueCreateDto);
+    ) {
+        return queueService.addQueue(queueCreateDto, bindingResult);
     }
 
-    @PutMapping("/update-queue-status")
+    @PutMapping("/edit-queue-information")
     @PreAuthorize(value = "hasRole('ADMIN')")
     public QueueEntity updateQueueStatus(
+            @RequestParam UUID queueId,
             @Valid @RequestBody QueueUpdateDto queueUpdateDto,
             BindingResult bindingResult
     ) {
-        return queueService.updateStatus(queueUpdateDto.getQueueId(), queueUpdateDto.getStatus(), bindingResult);
+        return queueService.editQueueInformation(queueId, queueUpdateDto, bindingResult);
     }
 
     @GetMapping("/getById")
     @PreAuthorize(value = "hasRole('ADMIN')")
-    public QueueEntity geQueueById(
+    public QueueEntity getQueueById(
             @RequestParam UUID queueId
     ) {
         return queueService.getById(queueId);
