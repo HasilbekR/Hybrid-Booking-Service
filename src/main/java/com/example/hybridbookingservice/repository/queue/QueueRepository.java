@@ -7,10 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
-
+@Repository
 public interface QueueRepository extends JpaRepository<QueueEntity, UUID> {
 
     @Query("SELECT MAX(q.queueNumber) FROM queues q")
@@ -23,4 +25,7 @@ public interface QueueRepository extends JpaRepository<QueueEntity, UUID> {
     @Transactional
     @Query("update queues set queueEntityStatus = :status where id = :id")
     void update(@Param("status") QueueEntityStatus status, @Param("id") UUID id);
+
+    @Query("SELECT COALESCE(MAX(q.queueNumber), 0) FROM queues q WHERE q.queueDate = :date")
+    Long findMaxQueueNumberByDate(LocalDate date);
 }

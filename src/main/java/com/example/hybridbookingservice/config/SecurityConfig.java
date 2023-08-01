@@ -27,23 +27,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf().disable()
-//                .authorizeHttpRequests((authorizer) -> {
-//                    authorizer
-//
-//                })
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtTokenFilter(authenticationService, jwtService),
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
 
     }
-
-//    @Bean
-//    public AuthenticationService authManager(HttpSecurity httpSecurity) {
-//        AuthenticationManagerBuilder authenticationManagerBuilder
-//                = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.userDetailsService()
-//    }
 
 
 }
