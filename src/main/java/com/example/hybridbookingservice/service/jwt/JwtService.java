@@ -20,8 +20,8 @@ public class JwtService {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
     }
 
-    private List<String> getRoles(Collection<? extends GrantedAuthority> roles) {
-        return roles.stream()
+    private List<String> getAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        return authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
     }
