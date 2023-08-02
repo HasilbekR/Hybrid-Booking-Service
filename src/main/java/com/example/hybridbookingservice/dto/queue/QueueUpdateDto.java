@@ -15,9 +15,13 @@ import java.util.UUID;
 @NoArgsConstructor
 
 public class QueueUpdateDto {
-    @NotNull(message = "Queue id must not be null")
-    private UUID queueId;
+
+    @NotNull(message = "userId must not be null")
+    private UUID userId;
+
+    @NotNull(message = "doctorId must not be null")
+    private UUID doctorId;
 
     @NotNull(message = "Queue status must not be null")
-    private QueueEntityStatus status;
+    private QueueEntityStatus queueEntityStatus;
 }

@@ -19,12 +19,12 @@ public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    protected UUID id;
 
     @CreationTimestamp
-    private LocalDateTime createdDate;
+    protected LocalDateTime createdDate;
 
     @UpdateTimestamp
-    private LocalDateTime updatedDate;
+    protected LocalDateTime updatedDate;
 
 }

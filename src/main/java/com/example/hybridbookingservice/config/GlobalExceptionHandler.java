@@ -1,6 +1,7 @@
 package com.example.hybridbookingservice.config;
 
 import com.example.hybridbookingservice.exceptions.DataNotFoundException;
+import com.example.hybridbookingservice.exceptions.RequestValidationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,6 +17,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {AccessDeniedException.class})
     public ResponseEntity<String> accessDenied(AccessDeniedException e) {
         return ResponseEntity.status(403).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = {RequestValidationException.class})
+    public ResponseEntity<String> requestValidationException(RequestValidationException e) {
+        return ResponseEntity.status(400).body(e.getMessage());
     }
 
 }
