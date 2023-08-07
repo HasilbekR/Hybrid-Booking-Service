@@ -2,7 +2,9 @@ package com.example.hybridbookingservice.controller;
 
 import com.example.hybridbookingservice.dto.queue.QueueCreateDto;
 import com.example.hybridbookingservice.dto.queue.QueueUpdateDto;
+import com.example.hybridbookingservice.dto.request.DoctorRequestDto;
 import com.example.hybridbookingservice.entity.queue.QueueEntity;
+import com.example.hybridbookingservice.service.doctor.DoctorService;
 import com.example.hybridbookingservice.service.queue.QueueService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,7 @@ import java.util.UUID;
 public class QueueController {
 
     private final QueueService queueService;
-
+    private final DoctorService doctorService;
     @PostMapping("/add-queue")
     @PreAuthorize(value = "hasRole('ADMIN')")
     public QueueEntity addQueue(
@@ -52,5 +54,12 @@ public class QueueController {
             @RequestParam UUID queueId
     ) {
         return queueService.cancelQueue(queueId);
+    }
+
+    @GetMapping("/getDoctorById")
+    public DoctorRequestDto getDoctorsById(
+            @RequestParam UUID doctorId
+    ) {
+        return doctorService.getDoctorById(doctorId);
     }
 }

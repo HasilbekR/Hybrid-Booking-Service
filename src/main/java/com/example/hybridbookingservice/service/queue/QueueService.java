@@ -35,7 +35,7 @@ public class QueueService {
 
         LocalDate currentDate = LocalDate.now();
 
-        Long lastQueueNumber = queueRepository.findMaxQueueNumberByDate(currentDate);
+        Long lastQueueNumber = queueRepository.findMaxQueueNumberByDateAndByDoctorId(currentDate, queueCreateDto.getDoctorId());
         if (lastQueueNumber == null) {
             lastQueueNumber = 0L;
         }
