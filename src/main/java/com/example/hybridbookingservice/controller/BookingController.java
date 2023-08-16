@@ -2,11 +2,13 @@ package com.example.hybridbookingservice.controller;
 
 import com.example.hybridbookingservice.dto.booking.BookingDto;
 import com.example.hybridbookingservice.dto.booking.BookingUpdateDto;
+import com.example.hybridbookingservice.dto.booking.DoctorAvailability;
 import com.example.hybridbookingservice.dto.booking.TimeSlotRequestDto;
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
 import com.example.hybridbookingservice.entity.booking.TimeSlot;
 import com.example.hybridbookingservice.exceptions.RequestValidationException;
 import com.example.hybridbookingservice.service.booking.BookingService;
+import com.example.hybridbookingservice.service.booking.TimeSlotService;
 import com.example.hybridbookingservice.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +31,7 @@ import java.util.UUID;
 @RequestMapping("/hybrid-booking/api/v1/booking")
 public class BookingController {
     private final BookingService bookingService;
+    private final TimeSlotService timeSlotService;
     private final UserService userService;
 
     @GetMapping("/get-doctor-available-time")
@@ -92,5 +97,13 @@ public class BookingController {
     ) {
         bookingService.delete(bookingUpdateDto, principal);
         return "Successfully deleted";
+    }
+    @PostMapping("/create-time-slots")
+    public String  createTimeSlots(
+            @RequestBody DoctorAvailability doctorAvailability,
+            @RequestParam(defaultValue = "30") Integer slotDuration
+            ){
+        timeSlotService.createTimeSlots(doctorAvailability,Duration.of(slotDuration, ChronoUnit.MINUTES));
+        return "successfully created";
     }
 }

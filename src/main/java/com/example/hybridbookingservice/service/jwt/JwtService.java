@@ -19,10 +19,4 @@ public class JwtService {
     public Jws<Claims> extractToken(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
     }
-
-    private List<String> getAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        return authorities.stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-    }
 }

@@ -6,9 +6,9 @@ spring:
     name: HYBRID-BOOKING-SERVICE
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/hybrid_booking_db
+    url: jdbc:postgresql://localhost:5432/booking_service_db
     username: postgres
-    password: 123
+    password: 20229
   jpa:
     hibernate:
       ddl-auto: update
