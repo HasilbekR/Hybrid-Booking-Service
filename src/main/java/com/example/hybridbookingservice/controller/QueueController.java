@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/queue")
+@RequestMapping("/hybrid-booking/api/v1/queue")
 @RequiredArgsConstructor
 public class QueueController {
 
     private final QueueService queueService;
 
     @PostMapping("/add-queue")
-    @PreAuthorize(value = "hasRole('ADMIN')")
+//    @PreAuthorize(value = "hasRole('ADMIN')")
     public QueueEntity addQueue(
             @Valid @RequestBody QueueCreateDto queueCreateDto,
             BindingResult bindingResult
@@ -29,7 +29,7 @@ public class QueueController {
     }
 
     @PutMapping("/edit-queue-information")
-    @PreAuthorize(value = "hasRole('ADMIN')")
+//    @PreAuthorize(value = "hasRole('ADMIN')")
     public QueueEntity updateQueueStatus(
             @RequestParam UUID queueId,
             @Valid @RequestBody QueueUpdateDto queueUpdateDto,
@@ -39,7 +39,7 @@ public class QueueController {
     }
 
     @GetMapping("/getById")
-    @PreAuthorize(value = "hasRole('ADMIN')")
+//    @PreAuthorize(value = "hasRole('ADMIN')")
     public QueueEntity getQueueById(
             @RequestParam UUID queueId
     ) {
@@ -47,7 +47,7 @@ public class QueueController {
     }
 
     @GetMapping("/cancel-queue")
-    @PreAuthorize(value = "hasRole('ADMIN')")
+//    @PreAuthorize(value = "hasRole('ADMIN')")
     public QueueEntity cancelQueue(
             @RequestParam UUID queueId
     ) {

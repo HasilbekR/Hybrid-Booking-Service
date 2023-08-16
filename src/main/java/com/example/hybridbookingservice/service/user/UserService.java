@@ -1,6 +1,6 @@
 package com.example.hybridbookingservice.service.user;
 
-import com.example.hybridbookingservice.dto.request.UserBookingRequestDto;
+import com.example.hybridbookingservice.dto.request.UserDetailsRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -23,10 +23,10 @@ public class UserService {
     private String getUserByEmail;
 
     public UUID findUserIdByEmail(String email) {
-        UserBookingRequestDto userBookingRequestDto = new UserBookingRequestDto(email);
+        UserDetailsRequestDto userDetailsRequestDto = new UserDetailsRequestDto(email);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<UserBookingRequestDto> entity = new HttpEntity<>(userBookingRequestDto, httpHeaders);
+        HttpEntity<UserDetailsRequestDto> entity = new HttpEntity<>(userDetailsRequestDto, httpHeaders);
         ResponseEntity<String> response = restTemplate.exchange(
                 URI.create(getUserByEmail),
                 HttpMethod.POST,
@@ -35,10 +35,10 @@ public class UserService {
         return UUID.fromString(Objects.requireNonNull(response.getBody()));
     }
     public String  findUserEmailById(UUID userId) {
-        UserBookingRequestDto userBookingRequestDto = new UserBookingRequestDto(String.valueOf(userId));
+        UserDetailsRequestDto userDetailsRequestDto = new UserDetailsRequestDto(String.valueOf(userId));
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<UserBookingRequestDto> entity = new HttpEntity<>(userBookingRequestDto, httpHeaders);
+        HttpEntity<UserDetailsRequestDto> entity = new HttpEntity<>(userDetailsRequestDto, httpHeaders);
         ResponseEntity<String> response = restTemplate.exchange(
                 URI.create(getUserById),
                 HttpMethod.POST,
