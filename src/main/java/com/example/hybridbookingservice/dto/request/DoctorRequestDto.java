@@ -1,12 +1,12 @@
 package com.example.hybridbookingservice.dto.request;
 
-import jakarta.persistence.metamodel.ListAttribute;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 
 public class DoctorRequestDto {
+    private UUID doctorId;
     private String fullName;
     private String email;
     private String password;
