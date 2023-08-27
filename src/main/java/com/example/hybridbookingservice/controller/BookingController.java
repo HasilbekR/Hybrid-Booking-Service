@@ -12,6 +12,7 @@ import com.example.hybridbookingservice.service.booking.TimeSlotService;
 import com.example.hybridbookingservice.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -34,15 +35,15 @@ public class BookingController {
     private final TimeSlotService timeSlotService;
     private final UserService userService;
 
-    @GetMapping("/get-doctor-available-time")
-    public List<TimeSlot> getAvailableTime(
+    @PostMapping("/get-doctor-available-time")
+    public ResponseEntity<List<TimeSlot>> getAvailableTime(
             @RequestBody TimeSlotRequestDto timeSlotRequestDto
             ) {
-        return bookingService.getAvailableTimeSlots(timeSlotRequestDto);
+        return ResponseEntity.ok(bookingService.getAvailableTimeSlots(timeSlotRequestDto));
     }
 
     @GetMapping("/{userId}/get-user-bookings")
-    public List<BookingEntity> getUserBookings(
+    public ResponseEntity<List<BookingEntity>> getUserBookings(
             @PathVariable UUID userId
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -50,7 +51,7 @@ public class BookingController {
         String email = userService.findUserEmailById(userId);
 
         if (isAdmin || authentication.getName().equals(email)) {
-            return bookingService.getUserBookings(userId);
+            return ResponseEntity.ok(bookingService.getUserBookings(userId));
         } else {
             throw new AccessDeniedException("Access denied");
         }
@@ -58,14 +59,14 @@ public class BookingController {
 
     @GetMapping("/{doctorId}/get-doctor-bookings")
     @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
-    public List<BookingEntity> getDoctorBookings(
+    public ResponseEntity<List<BookingEntity>> getDoctorBookings(
             @PathVariable UUID doctorId
     ) {
-        return bookingService.getDoctorBookings(doctorId);
+        return ResponseEntity.ok(bookingService.getDoctorBookings(doctorId));
     }
 
     @PostMapping("/save")
-    public BookingEntity save(
+    public ResponseEntity<BookingEntity> save(
             @Valid @RequestBody BookingDto bookingDto,
             Principal principal,
             BindingResult bindingResult
@@ -74,11 +75,11 @@ public class BookingController {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             throw new RequestValidationException(allErrors);
         }
-        return bookingService.save(bookingDto, principal);
+        return ResponseEntity.ok(bookingService.save(bookingDto, principal));
     }
 
-    @PutMapping("/update")
-    public BookingEntity update(
+    @PostMapping("/update")
+    public ResponseEntity<BookingEntity> update(
             @Valid @RequestBody BookingUpdateDto bookingUpdateDto,
             BindingResult bindingResult,
             Principal principal
@@ -87,23 +88,23 @@ public class BookingController {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             throw new RequestValidationException(allErrors);
         }
-        return bookingService.update(bookingUpdateDto, principal);
+        return ResponseEntity.ok(bookingService.update(bookingUpdateDto, principal));
     }
 
     @DeleteMapping("/delete")
-    public String delete(
+    public ResponseEntity<String> delete(
             @RequestBody BookingUpdateDto bookingUpdateDto,
             Principal principal
     ) {
         bookingService.delete(bookingUpdateDto, principal);
-        return "Successfully deleted";
+        return ResponseEntity.ok("Successfully deleted");
     }
     @PostMapping("/create-time-slots")
-    public String  createTimeSlots(
+    public ResponseEntity<String> createTimeSlots(
             @RequestBody DoctorAvailability doctorAvailability,
             @RequestParam(defaultValue = "30") Integer slotDuration
             ){
         timeSlotService.createTimeSlots(doctorAvailability,Duration.of(slotDuration, ChronoUnit.MINUTES));
-        return "successfully created";
+        return ResponseEntity.ok("successfully created");
     }
 }
