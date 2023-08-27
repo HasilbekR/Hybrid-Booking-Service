@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/queue")
+@RequestMapping("/hybrid-booking/api/v1/queue")
 @RequiredArgsConstructor
 public class QueueController {
 
@@ -27,6 +27,7 @@ public class QueueController {
     @PostMapping("/add-queue")
 //    @PreAuthorize(value = "hasRole('ADMIN')")
     public ResponseEntity<QueueEntity> addQueue(
+
             @Valid @RequestBody QueueCreateDto queueCreateDto,
             BindingResult bindingResult
     ) {
@@ -36,6 +37,7 @@ public class QueueController {
     @PostMapping("/edit-queue-information")
 //    @PreAuthorize(value = "hasRole('ADMIN')")
     public ResponseEntity<QueueEntity> updateQueueStatus(
+
             @RequestParam UUID queueId,
             @Valid @RequestBody QueueUpdateDto queueUpdateDto,
             BindingResult bindingResult
@@ -46,6 +48,7 @@ public class QueueController {
     @GetMapping("/getById")
 //    @PreAuthorize(value = "hasRole('ADMIN')")
     public ResponseEntity<QueueEntity> getQueueById(
+
             @RequestParam UUID queueId
     ) {
         return ResponseEntity.ok(queueService.getById(queueId));
@@ -54,6 +57,7 @@ public class QueueController {
     @GetMapping("/cancel-queue")
 //    @PreAuthorize(value = "hasRole('ADMIN')")
     public ResponseEntity<QueueEntity> cancelQueue(
+
             @RequestParam UUID queueId
     ) {
         return ResponseEntity.ok(queueService.cancelQueue(queueId));

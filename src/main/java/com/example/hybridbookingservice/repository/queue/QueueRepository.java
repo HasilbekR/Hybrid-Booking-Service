@@ -15,6 +15,9 @@ import java.util.UUID;
 @Repository
 public interface QueueRepository extends JpaRepository<QueueEntity, UUID> {
 
+    @Query("SELECT MAX(q.queueNumber) FROM queues q")
+    Long findMaxQueueNumber(    );
+
     @Query("select q from queues q where q.userId = :id and q.queueEntityStatus = null")
     Optional<QueueEntity> getActiveQueue(@Param("id")UUID userId);
 
