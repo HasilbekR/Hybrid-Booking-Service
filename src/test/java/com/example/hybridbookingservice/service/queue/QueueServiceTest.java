@@ -6,6 +6,7 @@ import com.example.hybridbookingservice.entity.queue.QueueEntity;
 import com.example.hybridbookingservice.exceptions.DataNotFoundException;
 import com.example.hybridbookingservice.exceptions.RequestValidationException;
 import com.example.hybridbookingservice.repository.queue.QueueRepository;
+import com.example.hybridbookingservice.service.doctor.DoctorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,12 +35,15 @@ class QueueServiceTest {
     @InjectMocks
     private QueueService queueService;
 
+    @InjectMocks
+    private DoctorService doctorService;
+
     @BeforeEach
     public void setUp() {
         queueRepository = mock(QueueRepository.class);
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        queueService = new QueueService(queueRepository, modelMapper);
+        queueService = new QueueService(queueRepository, doctorService, modelMapper);
     }
 
     @Test
@@ -49,7 +53,7 @@ class QueueServiceTest {
         when(bindingResult.hasErrors()).thenReturn(false);
 
         LocalDate currentDate = LocalDate.now();
-        when(queueRepository.findMaxQueueNumberByDate(currentDate)).thenReturn(10L);
+        when(queueRepository.findMaxQueueNumberByQueueDateAndDoctorId(currentDate, queueCreateDto.getDoctorId())).thenReturn(10L);
 
         QueueEntity expectedQueueEntity = new QueueEntity();
         when(queueRepository.save(any(QueueEntity.class))).thenReturn(expectedQueueEntity);

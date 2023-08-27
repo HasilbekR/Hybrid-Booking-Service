@@ -21,12 +21,18 @@ public class SecurityConfig {
     private final AuthenticationService authenticationService;
     private final JwtService jwtService;
 
+
+    private final String[] permitAll = {"/swagger-ui/**", "/v3/api-docs/**", "/hybrid-booking/api/v1/booking/**", "/api/v1/queue/**", "/api/documentation/**"};
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf().disable()
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.anyRequest().permitAll();
+                    authorize
+                            .requestMatchers(permitAll).permitAll()
+                            .anyRequest().authenticated();
                 })
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtTokenFilter(authenticationService, jwtService),
