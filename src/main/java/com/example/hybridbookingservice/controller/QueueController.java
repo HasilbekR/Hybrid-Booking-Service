@@ -12,18 +12,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/hybrid-booking/api/v1/queue")
+@RequestMapping("/hybrid-booking/queue")
 @RequiredArgsConstructor
 public class QueueController {
 
     private final QueueService queueService;
-    private final DoctorService doctorService;
     @PostMapping("/add-queue")
 //    @PreAuthorize(value = "hasRole('ADMIN')")
     public ResponseEntity<QueueEntity> addQueue(

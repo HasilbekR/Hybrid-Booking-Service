@@ -6,9 +6,9 @@ spring:
     name: HYBRID-BOOKING-SERVICE
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/booking_service_db
-    username: postgres
-    password: 20229
+    url: jdbc:postgresql://hospital-db-do-user-14558489-0.b.db.ondigitalocean.com:25060/booking_service_db
+    username: doadmin
+    password: AVNS_ZsEHpELLbPwTvabmXJN
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,20 +18,17 @@ spring:
         format_sql: true
 
 services:
-  get-by-user-email : http://USER-SERVICE/user/api/v1/getByEmail
-  get-by-user-id : http://USER-SERVICE/user/api/v1/getById
+  get-user-id : http://USER-SERVICE/user/send-id
+  get-user-email : http://USER-SERVICE/user/send-email
 
 
 eureka:
   client:
     service-url:
-      default-url: ${EUREKA_URI:http://localhost:8761/eureka/}
+      default-url: ${EUREKA_URI:http://134.209.20.129:8761/eureka/}
     instance:
       preferIpAddress: true
 
-
 jwt:
   secret:
-    key: 753778214125442A472D4B6150645367566B59703373367639792F423F452848
-
-
+    key: 753778214125442A472D4B6150645367566B59703373367639792F423F4528487782141254367566B5970337336

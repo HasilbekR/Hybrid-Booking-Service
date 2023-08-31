@@ -1,6 +1,8 @@
 package com.example.hybridbookingservice.service.booking;
 
 import com.example.hybridbookingservice.dto.booking.DoctorAvailability;
+import com.example.hybridbookingservice.dto.response.StandardResponse;
+import com.example.hybridbookingservice.dto.response.Status;
 import com.example.hybridbookingservice.entity.booking.TimeSlot;
 import com.example.hybridbookingservice.repository.booking.TimeSlotRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,7 @@ import java.time.LocalTime;
 @RequiredArgsConstructor
 public class TimeSlotService {
     private final TimeSlotRepository timeSlotRepository;
-    public void createTimeSlots(DoctorAvailability doctorAvailability, Duration slotDuration){
+    public StandardResponse<String> createTimeSlots(DoctorAvailability doctorAvailability, Duration slotDuration){
         LocalTime currentTime = doctorAvailability.getStartingTime();
 
         while (currentTime.isBefore(doctorAvailability.getEndingTime())) {
@@ -21,5 +23,7 @@ public class TimeSlotService {
             timeSlotRepository.save(timeSlot);
             currentTime = currentTime.plus(slotDuration);
         }
+        return StandardResponse.<String>builder().status(Status.SUCCESS).message("Time slots successfully created for "+doctorAvailability.getDay())
+                .build();
     }
 }

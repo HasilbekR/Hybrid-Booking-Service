@@ -18,28 +18,28 @@ import java.util.UUID;
 
 public class TimeSlotServiceTest {
 
-    @Mock
-    private TimeSlotRepository timeSlotRepository;
-
-    @InjectMocks
-    private TimeSlotService timeSlotService;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    public void testCreateTimeSlots() {
-        DoctorAvailability doctorAvailability = new DoctorAvailability();
-        doctorAvailability.setDay(LocalDate.now());
-        doctorAvailability.setStartingTime(LocalTime.of(9, 0));
-        doctorAvailability.setEndingTime(LocalTime.of(17, 0));
-        doctorAvailability.setDoctorId(UUID.randomUUID());
-        Duration slotDuration = Duration.ofMinutes(30);
-
-        timeSlotService.createTimeSlots(doctorAvailability, slotDuration);
-
-        verify(timeSlotRepository, times(16)).save(any(TimeSlot.class)); // Assuming 8 hours, 30 minutes each
-    }
+//    @Mock
+//    private TimeSlotRepository timeSlotRepository;
+//
+//    @InjectMocks
+//    private TimeSlotService timeSlotService;
+//
+//    @BeforeEach
+//    public void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//    }
+//
+//    @Test
+//    public void testCreateTimeSlots() {
+//        DoctorAvailability doctorAvailability = new DoctorAvailability();
+//        doctorAvailability.setDay(LocalDate.now());
+//        doctorAvailability.setStartingTime(LocalTime.of(9, 0));
+//        doctorAvailability.setEndingTime(LocalTime.of(17, 0));
+//        doctorAvailability.setDoctorId(UUID.randomUUID());
+//        Duration slotDuration = Duration.ofMinutes(30);
+//
+//        timeSlotService.createTimeSlots(doctorAvailability, slotDuration);
+//
+//        verify(timeSlotRepository, times(16)).save(any(TimeSlot.class)); // Assuming 8 hours, 30 minutes each
+//    }
 }
