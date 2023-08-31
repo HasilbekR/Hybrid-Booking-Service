@@ -3,6 +3,8 @@ package com.example.hybridbookingservice.service.booking;
 import com.example.hybridbookingservice.dto.booking.BookingDto;
 import com.example.hybridbookingservice.dto.booking.BookingUpdateDto;
 import com.example.hybridbookingservice.dto.booking.TimeSlotRequestDto;
+import com.example.hybridbookingservice.dto.response.StandardResponse;
+import com.example.hybridbookingservice.dto.response.Status;
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
 import com.example.hybridbookingservice.entity.booking.TimeSlot;
 import com.example.hybridbookingservice.exceptions.DataNotFoundException;
@@ -26,7 +28,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final UserService userService;
 
-    public BookingEntity save(BookingDto bookingDto, Principal principal) {
+    public StandardResponse<BookingEntity> save(BookingDto bookingDto, Principal principal) {
         String name = principal.getName();
         UUID userId = userService.findUserIdByEmail(name);
         TimeSlot timeSlot = timeSlotRepository.findById(bookingDto.getTimeSlotId()).orElseThrow(() -> new DataNotFoundException("Not available time slot"));
@@ -37,10 +39,11 @@ public class BookingService {
         timeSlot.setAvailability(false);
         timeSlot.setUpdatedDate(LocalDateTime.now());
         timeSlotRepository.save(timeSlot);
-        return bookingRepository.save(booking);
+        return StandardResponse.<BookingEntity>builder().status(Status.SUCCESS).message("Booking successfully saved")
+                .data(bookingRepository.save(booking)).build();
     }
 
-    public BookingEntity update(BookingUpdateDto bookingUpdateDto, Principal principal) {
+    public StandardResponse<BookingEntity> update(BookingUpdateDto bookingUpdateDto, Principal principal) {
         BookingEntity booking = bookingRepository.findById(bookingUpdateDto.getBookingId()).orElseThrow(() -> new DataNotFoundException("Booking not found"));
         UUID userIdByEmail = userService.findUserIdByEmail(principal.getName());
         if (!booking.getUserId().equals(userIdByEmail)) {
@@ -58,10 +61,11 @@ public class BookingService {
         timeSlotRepository.save(availableTimeSlot);
 
         booking.setTimeSlot(availableTimeSlot);
-        return bookingRepository.save(booking);
+        return StandardResponse.<BookingEntity>builder().status(Status.SUCCESS).message("Booking successfully updated")
+                .data(bookingRepository.save(booking)).build();
     }
 
-    public void delete(BookingUpdateDto bookingUpdateDto, Principal principal) {
+    public StandardResponse<String> delete(BookingUpdateDto bookingUpdateDto, Principal principal) {
         BookingEntity booking = bookingRepository.findById(bookingUpdateDto.getBookingId()).orElseThrow(() -> new DataNotFoundException("Booking not found"));
         UUID userIdByEmail = userService.findUserIdByEmail(principal.getName());
         if (!booking.getUserId().equals(userIdByEmail)) {
@@ -72,18 +76,25 @@ public class BookingService {
         timeSlot.setUpdatedDate(LocalDateTime.now());
         timeSlotRepository.save(timeSlot);
         bookingRepository.delete(booking);
+        return StandardResponse.<String>builder().status(Status.SUCCESS).message("Booking successfully deleted").build();
     }
 
-    public List<BookingEntity> getUserBookings(UUID userId) {
-        return bookingRepository.getBookingEntityByUserId(userId);
+    public StandardResponse<List<BookingEntity>> getUserBookings(UUID userId) {
+        return StandardResponse.<List<BookingEntity>>builder().status(Status.SUCCESS).message("User's bookings")
+                .data(bookingRepository.getBookingEntityByUserIdOrderByCreatedDateDesc(userId)).build();
     }
 
-    public List<BookingEntity> getDoctorBookings(UUID doctorId) {
-        return bookingRepository.getDoctorBookings(doctorId);
+    public StandardResponse<List<BookingEntity>> getDoctorBookings(UUID doctorId) {
+        return StandardResponse.<List<BookingEntity>>builder().status(Status.SUCCESS)
+                .message("Doctor's booking list")
+                .data(bookingRepository.getDoctorBookings(doctorId)).build();
     }
 
-    public List<TimeSlot> getAvailableTimeSlots(TimeSlotRequestDto timeSlotRequestDto) {
-        return timeSlotRepository.getDoctorAvailableTimeSlotForTheDay(timeSlotRequestDto.getBookingDay(), timeSlotRequestDto.getDoctorId());
+    public StandardResponse<List<TimeSlot>> getAvailableTimeSlots(TimeSlotRequestDto timeSlotRequestDto) {
+        return StandardResponse.<List<TimeSlot>>builder()
+                .status(Status.SUCCESS)
+                .message("Doctor's available time slots")
+                .data(timeSlotRepository.getDoctorAvailableTimeSlotForTheDay(timeSlotRequestDto.getBookingDay(), timeSlotRequestDto.getDoctorId())).build();
     }
 
 }

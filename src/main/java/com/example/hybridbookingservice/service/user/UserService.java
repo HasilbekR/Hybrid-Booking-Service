@@ -1,6 +1,6 @@
 package com.example.hybridbookingservice.service.user;
 
-import com.example.hybridbookingservice.dto.request.UserDetailsRequestDto;
+import com.example.hybridbookingservice.dto.request.ExchangeDataDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -17,34 +17,33 @@ import java.util.UUID;
 public class UserService {
     private final RestTemplate restTemplate;
 
-    @Value("${services.get-by-user-id}")
-    private String getUserById;
-    @Value("${services.get-by-user-email}")
-    private String getUserByEmail;
+    @Value("${services.get-user-email}")
+    private String getUserEmail;
+    @Value("${services.get-user-id}")
+    private String getUserId;
 
     public UUID findUserIdByEmail(String email) {
-        UserDetailsRequestDto userDetailsRequestDto = new UserDetailsRequestDto(email);
+        ExchangeDataDto exchangeDataDto = new ExchangeDataDto(email);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<UserDetailsRequestDto> entity = new HttpEntity<>(userDetailsRequestDto, httpHeaders);
-        ResponseEntity<String> response = restTemplate.exchange(
-                URI.create(getUserByEmail),
+        HttpEntity<ExchangeDataDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
+        ResponseEntity<UUID> response = restTemplate.exchange(
+                URI.create(getUserId),
                 HttpMethod.POST,
                 entity,
-                String.class);
-        return UUID.fromString(Objects.requireNonNull(response.getBody()));
+                UUID.class);
+        return response.getBody();
     }
     public String  findUserEmailById(UUID userId) {
-        UserDetailsRequestDto userDetailsRequestDto = new UserDetailsRequestDto(String.valueOf(userId));
+        ExchangeDataDto exchangeDataDto = new ExchangeDataDto(String.valueOf(userId));
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<UserDetailsRequestDto> entity = new HttpEntity<>(userDetailsRequestDto, httpHeaders);
+        HttpEntity<ExchangeDataDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
         ResponseEntity<String> response = restTemplate.exchange(
-                URI.create(getUserById),
+                URI.create(getUserEmail),
                 HttpMethod.POST,
                 entity,
                 String.class);
-        System.out.println(Objects.requireNonNull(response.getBody()));
         return Objects.requireNonNull(response.getBody());
     }
 
