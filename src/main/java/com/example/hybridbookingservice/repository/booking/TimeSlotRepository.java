@@ -13,8 +13,10 @@ import java.util.UUID;
 
 @Repository
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, UUID> {
-    @Query(value = "select t from timeslots t where t.availability = true and t.bookingDay = ?1 and t.doctorId = ?2")
-    List<TimeSlot> getDoctorAvailableTimeSlotForTheDay(LocalDate localDate, UUID doctorId);
+    @Query(value = "select t from timeslots t where t.availability = true and t.bookingDay = ?1 and t.doctorId = ?2 and t.bookingTime > ?3 order by t.bookingTime asc ")
+    List<TimeSlot> getDoctorAvailableTimeSlotForTheDay(LocalDate localDate, UUID doctorId, LocalTime bookingTime);
     @Query(value = "select t from timeslots t where t.availability = true  and t.bookingDay = ?1 and t.bookingTime = ?2 and t.doctorId = ?3")
     Optional<TimeSlot> getAvailableTimeSlot(LocalDate localDate, LocalTime localTime, UUID doctorId);
+    @Query(value = "select distinct t.bookingDay from timeslots t where t.bookingDay >= ?1 and t.doctorId = ?2 order by t.bookingDay asc limit 6")
+    List<LocalDate> getWorkingDaysOfDoctor(LocalDate localDate, UUID doctorId);
 }
