@@ -4,9 +4,13 @@ import com.example.hybridbookingservice.dto.booking.DoctorAvailability;
 import com.example.hybridbookingservice.dto.response.StandardResponse;
 import com.example.hybridbookingservice.dto.response.Status;
 import com.example.hybridbookingservice.entity.booking.TimeSlot;
+import com.example.hybridbookingservice.exceptions.DataNotFoundException;
+import com.example.hybridbookingservice.exceptions.RequestValidationException;
 import com.example.hybridbookingservice.repository.booking.TimeSlotRepository;
+import com.example.hybridbookingservice.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -15,8 +19,14 @@ import java.time.LocalTime;
 @RequiredArgsConstructor
 public class TimeSlotService {
     private final TimeSlotRepository timeSlotRepository;
-    public StandardResponse<String> createTimeSlots(DoctorAvailability doctorAvailability, Duration slotDuration){
+    private final UserService userService;
+    public StandardResponse<String> createTimeSlots(DoctorAvailability doctorAvailability, Duration slotDuration, BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            throw new RequestValidationException(bindingResult.getAllErrors());
+        }
         LocalTime currentTime = doctorAvailability.getStartingTime();
+        String userEmailById = userService.findUserEmailById(doctorAvailability.getDoctorId());
+        if (userEmailById == null) throw new DataNotFoundException("Doctor not found");
 
         while (currentTime.isBefore(doctorAvailability.getEndingTime())) {
             TimeSlot timeSlot = new TimeSlot(doctorAvailability.getDay(), currentTime, true, doctorAvailability.getDoctorId());

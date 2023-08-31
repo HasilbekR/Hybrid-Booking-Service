@@ -4,6 +4,7 @@ import com.example.hybridbookingservice.dto.booking.BookingDto;
 import com.example.hybridbookingservice.dto.booking.BookingUpdateDto;
 import com.example.hybridbookingservice.dto.booking.DoctorAvailability;
 import com.example.hybridbookingservice.dto.booking.TimeSlotRequestDto;
+import com.example.hybridbookingservice.dto.request.ExchangeDataDto;
 import com.example.hybridbookingservice.dto.response.StandardResponse;
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
 import com.example.hybridbookingservice.entity.booking.TimeSlot;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -90,8 +92,15 @@ public class BookingController {
     @PostMapping("/create-time-slots")
     public StandardResponse<String> createTimeSlots(
             @RequestBody DoctorAvailability doctorAvailability,
-            @RequestParam(defaultValue = "30") Integer slotDuration
+            @RequestParam(defaultValue = "30") Integer slotDuration,
+            BindingResult bindingResult
             ){
-        return timeSlotService.createTimeSlots(doctorAvailability,Duration.of(slotDuration, ChronoUnit.MINUTES));
+        return timeSlotService.createTimeSlots(doctorAvailability,Duration.of(slotDuration, ChronoUnit.MINUTES),bindingResult);
+    }
+    @PostMapping("/send-working-days-of-doctor")
+    public List<LocalDate> getWorkingDaysOfDoctor(
+            @RequestBody ExchangeDataDto exchangeDataDto
+            ){
+        return bookingService.getWorkingDaysOfDoctor(UUID.fromString(exchangeDataDto.getSource()));
     }
 }

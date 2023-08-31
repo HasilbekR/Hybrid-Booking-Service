@@ -16,7 +16,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -94,7 +96,14 @@ public class BookingService {
         return StandardResponse.<List<TimeSlot>>builder()
                 .status(Status.SUCCESS)
                 .message("Doctor's available time slots")
-                .data(timeSlotRepository.getDoctorAvailableTimeSlotForTheDay(timeSlotRequestDto.getBookingDay(), timeSlotRequestDto.getDoctorId())).build();
+                .data(timeSlotRepository.getDoctorAvailableTimeSlotForTheDay(
+                        timeSlotRequestDto.getBookingDay(),
+                        timeSlotRequestDto.getDoctorId(),
+                        LocalTime.now()))
+                .build();
+    }
+    public List<LocalDate> getWorkingDaysOfDoctor(UUID doctorId){
+        return timeSlotRepository.getWorkingDaysOfDoctor(LocalDate.now(), doctorId);
     }
 
 }
