@@ -1,6 +1,7 @@
 package com.example.hybridbookingservice.service.user;
 
 import com.example.hybridbookingservice.dto.request.ExchangeDataDto;
+import com.example.hybridbookingservice.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
     private final RestTemplate restTemplate;
+    private final JwtService jwtService;
 
     @Value("${services.get-user-email}")
     private String getUserEmail;
@@ -26,6 +28,7 @@ public class UserService {
         ExchangeDataDto exchangeDataDto = new ExchangeDataDto(email);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.set("Authorization", "Bearer " + jwtService.generateAccessTokenForService("USER-SERVICE"));
         HttpEntity<ExchangeDataDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
         ResponseEntity<UUID> response = restTemplate.exchange(
                 URI.create(getUserId),
@@ -38,6 +41,7 @@ public class UserService {
         ExchangeDataDto exchangeDataDto = new ExchangeDataDto(String.valueOf(userId));
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.set("Authorization", "Bearer " + jwtService.generateAccessTokenForService("USER-SERVICE"));
         HttpEntity<ExchangeDataDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
         ResponseEntity<String> response = restTemplate.exchange(
                 URI.create(getUserEmail),

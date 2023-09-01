@@ -19,11 +19,15 @@ import java.time.LocalTime;
 @RequiredArgsConstructor
 public class TimeSlotService {
     private final TimeSlotRepository timeSlotRepository;
+    private final UserService userService;
     public StandardResponse<String> createTimeSlots(DoctorAvailability doctorAvailability, Duration slotDuration, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             throw new RequestValidationException(bindingResult.getAllErrors());
         }
         LocalTime currentTime = doctorAvailability.getStartingTime();
+        String userEmailById = userService.findUserEmailById(doctorAvailability.getDoctorId());
+        if (userEmailById == null) throw new DataNotFoundException("Doctor not found");
+
         while (currentTime.isBefore(doctorAvailability.getEndingTime())) {
             TimeSlot timeSlot = new TimeSlot(doctorAvailability.getDay(), currentTime, true, doctorAvailability.getDoctorId());
             timeSlotRepository.save(timeSlot);
