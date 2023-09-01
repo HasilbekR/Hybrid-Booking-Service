@@ -84,8 +84,8 @@ public class BookingService {
 
     public StandardResponse<BookingResultsForFront> getUserBookings(UUID userId) {
         BookingResultsForFront bookings = BookingResultsForFront.builder()
-                .upcoming(bookingRepository.getUserUpcomingBookings(userId))
-                .past(bookingRepository.getUserPastBookings(userId))
+                .upcoming(bookingRepository.getUserUpcomingBookings(userId, BookingStatus.SCHEDULED, BookingStatus.IN_PROGRESS))
+                .past(bookingRepository.getUserPastBookings(userId, BookingStatus.COMPLETED, BookingStatus.DECLINED))
                 .build();
         return StandardResponse.<BookingResultsForFront>builder().status(Status.SUCCESS).message("User's bookings")
                 .data(bookings).build();
