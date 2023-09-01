@@ -1,13 +1,9 @@
 package com.example.hybridbookingservice.controller;
 
-import com.example.hybridbookingservice.dto.booking.BookingDto;
-import com.example.hybridbookingservice.dto.booking.BookingUpdateDto;
-import com.example.hybridbookingservice.dto.booking.DoctorAvailability;
-import com.example.hybridbookingservice.dto.booking.TimeSlotRequestDto;
+import com.example.hybridbookingservice.dto.booking.*;
 import com.example.hybridbookingservice.dto.request.ExchangeDataDto;
 import com.example.hybridbookingservice.dto.response.StandardResponse;
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
-import com.example.hybridbookingservice.entity.booking.TimeSlot;
 import com.example.hybridbookingservice.exceptions.RequestValidationException;
 import com.example.hybridbookingservice.service.booking.BookingService;
 import com.example.hybridbookingservice.service.booking.TimeSlotService;
@@ -35,14 +31,14 @@ public class BookingController {
     private final UserService userService;
 
     @PostMapping("/get-doctor-available-time")
-    public StandardResponse<List<TimeSlot>> getAvailableTime(
+    public StandardResponse<List<AvailableTimeSlots>> getAvailableTime(
             @RequestBody TimeSlotRequestDto timeSlotRequestDto
             ) {
         return bookingService.getAvailableTimeSlots(timeSlotRequestDto);
     }
 
     @GetMapping("/get-user-bookings")
-    public StandardResponse<List<BookingEntity>> getUserBookings(
+    public StandardResponse<BookingResultsForFront> getUserBookings(
             Principal principal
     ) {
         return bookingService.getUserBookings(userService.findUserIdByEmail(principal.getName()));
