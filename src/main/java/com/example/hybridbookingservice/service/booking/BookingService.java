@@ -99,7 +99,8 @@ public class BookingService {
         List<TimeSlot> slots = timeSlotRepository.getDoctorAvailableTimeSlotForTheDay(
                 timeSlotRequestDto.getBookingDay(),
                 timeSlotRequestDto.getDoctorId(),
-                LocalTime.now());
+                LocalTime.now(),
+                LocalDate.now());
         List<AvailableTimeSlots> availableTimeSlots = new ArrayList<>();
         for (TimeSlot slot : slots) {
             availableTimeSlots.add(AvailableTimeSlots.builder()
