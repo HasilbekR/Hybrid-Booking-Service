@@ -4,6 +4,7 @@ import com.example.hybridbookingservice.dto.booking.*;
 import com.example.hybridbookingservice.dto.response.StandardResponse;
 import com.example.hybridbookingservice.dto.response.Status;
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
+import com.example.hybridbookingservice.entity.booking.BookingStatus;
 import com.example.hybridbookingservice.entity.booking.TimeSlot;
 import com.example.hybridbookingservice.exceptions.DataNotFoundException;
 import com.example.hybridbookingservice.repository.booking.BookingRepository;
@@ -36,6 +37,7 @@ public class BookingService {
         BookingEntity booking = BookingEntity.builder()
                 .userId(userId)
                 .timeSlot(timeSlot)
+                .status(BookingStatus.SCHEDULED)
                 .build();
         timeSlot.setAvailability(false);
         timeSlot.setUpdatedDate(LocalDateTime.now());
