@@ -10,7 +10,10 @@ import java.util.UUID;
 
 @Repository
 public interface BookingRepository extends JpaRepository<BookingEntity, UUID> {
-    List<BookingEntity> getBookingEntityByUserIdOrderByCreatedDateDesc(UUID userId);
+    @Query(value = "select b from bookings b where b.userId = ?1 and (b.status = 'COMPLETED' or b.status = 'DECLINED') order by b.createdDate desc ")
+    List<BookingEntity> getUserPastBookings(UUID userId);
+    @Query(value = "select b from bookings b where b.userId = ?1 and (b.status = 'SCHEDULED' or b.status = 'IN_PROGRESS') order by b.createdDate desc ")
+    List<BookingEntity> getUserUpcomingBookings(UUID userId);
     @Query(value = "select b from bookings b where b.timeSlot.doctorId = ?1")
     List<BookingEntity> getDoctorBookings(UUID doctorId);
 }

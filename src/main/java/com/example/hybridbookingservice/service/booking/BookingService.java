@@ -1,8 +1,6 @@
 package com.example.hybridbookingservice.service.booking;
 
-import com.example.hybridbookingservice.dto.booking.BookingDto;
-import com.example.hybridbookingservice.dto.booking.BookingUpdateDto;
-import com.example.hybridbookingservice.dto.booking.TimeSlotRequestDto;
+import com.example.hybridbookingservice.dto.booking.*;
 import com.example.hybridbookingservice.dto.response.StandardResponse;
 import com.example.hybridbookingservice.dto.response.Status;
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
@@ -19,6 +17,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -81,9 +80,13 @@ public class BookingService {
         return StandardResponse.<String>builder().status(Status.SUCCESS).message("Booking successfully deleted").build();
     }
 
-    public StandardResponse<List<BookingEntity>> getUserBookings(UUID userId) {
-        return StandardResponse.<List<BookingEntity>>builder().status(Status.SUCCESS).message("User's bookings")
-                .data(bookingRepository.getBookingEntityByUserIdOrderByCreatedDateDesc(userId)).build();
+    public StandardResponse<BookingResultsForFront> getUserBookings(UUID userId) {
+        BookingResultsForFront bookings = BookingResultsForFront.builder()
+                .upcoming(bookingRepository.getUserUpcomingBookings(userId))
+                .past(bookingRepository.getUserPastBookings(userId))
+                .build();
+        return StandardResponse.<BookingResultsForFront>builder().status(Status.SUCCESS).message("User's bookings")
+                .data(bookings).build();
     }
 
     public StandardResponse<List<BookingEntity>> getDoctorBookings(UUID doctorId) {
@@ -92,14 +95,22 @@ public class BookingService {
                 .data(bookingRepository.getDoctorBookings(doctorId)).build();
     }
 
-    public StandardResponse<List<TimeSlot>> getAvailableTimeSlots(TimeSlotRequestDto timeSlotRequestDto) {
-        return StandardResponse.<List<TimeSlot>>builder()
+    public StandardResponse<List<AvailableTimeSlots>> getAvailableTimeSlots(TimeSlotRequestDto timeSlotRequestDto) {
+        List<TimeSlot> slots = timeSlotRepository.getDoctorAvailableTimeSlotForTheDay(
+                timeSlotRequestDto.getBookingDay(),
+                timeSlotRequestDto.getDoctorId(),
+                LocalTime.now());
+        List<AvailableTimeSlots> availableTimeSlots = new ArrayList<>();
+        for (TimeSlot slot : slots) {
+            availableTimeSlots.add(AvailableTimeSlots.builder()
+                    .bookingTime(slot.getBookingTime())
+                    .id(slot.getId())
+                    .build());
+        }
+        return StandardResponse.<List<AvailableTimeSlots>>builder()
                 .status(Status.SUCCESS)
                 .message("Doctor's available time slots")
-                .data(timeSlotRepository.getDoctorAvailableTimeSlotForTheDay(
-                        timeSlotRequestDto.getBookingDay(),
-                        timeSlotRequestDto.getDoctorId(),
-                        LocalTime.now()))
+                .data(availableTimeSlots)
                 .build();
     }
     public List<LocalDate> getWorkingDaysOfDoctor(UUID doctorId){
