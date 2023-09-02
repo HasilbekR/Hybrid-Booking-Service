@@ -71,17 +71,12 @@ public class BookingController {
         return bookingService.save(bookingDto, principal);
     }
 
-    @PostMapping("/update")
-    public StandardResponse<BookingEntity> update(
-            @Valid @RequestBody BookingUpdateDto bookingUpdateDto,
-            BindingResult bindingResult,
+    @GetMapping("/cancel")
+    public StandardResponse<String> cancel(
+            @RequestParam UUID bookingId,
             Principal principal
     ) throws RequestValidationException {
-        if (bindingResult.hasErrors()) {
-            List<ObjectError> allErrors = bindingResult.getAllErrors();
-            throw new RequestValidationException(allErrors);
-        }
-        return bookingService.update(bookingUpdateDto, principal);
+        return bookingService.cancel(bookingId, principal);
     }
 
     @DeleteMapping("/delete")

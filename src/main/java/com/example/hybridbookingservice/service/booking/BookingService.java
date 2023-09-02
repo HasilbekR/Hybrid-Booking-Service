@@ -46,26 +46,21 @@ public class BookingService {
                 .data(bookingRepository.save(booking)).build();
     }
 
-    public StandardResponse<BookingEntity> update(BookingUpdateDto bookingUpdateDto, Principal principal) {
-        BookingEntity booking = bookingRepository.findById(bookingUpdateDto.getBookingId()).orElseThrow(() -> new DataNotFoundException("Booking not found"));
+    public StandardResponse<String> cancel(UUID bookingId, Principal principal) {
+        BookingEntity booking = bookingRepository.findById(bookingId).orElseThrow(() -> new DataNotFoundException("Booking not found"));
         UUID userIdByEmail = userService.findUserIdByEmail(principal.getName());
         if (!booking.getUserId().equals(userIdByEmail)) {
             throw new AccessDeniedException("You do not have access to update this booking");
         }
-        TimeSlot availableTimeSlot = timeSlotRepository.getAvailableTimeSlot(bookingUpdateDto.getBookingDay(), bookingUpdateDto.getBookingTime(), booking.getTimeSlot().getDoctorId())
-                .orElseThrow(() -> new AccessDeniedException("Unavailable time slot"));
         TimeSlot timeSlot = booking.getTimeSlot();
         timeSlot.setAvailability(true);
         timeSlot.setUpdatedDate(LocalDateTime.now());
         timeSlotRepository.save(timeSlot);
+        booking.setStatus(BookingStatus.DECLINED);
+        bookingRepository.save(booking);
 
-        availableTimeSlot.setAvailability(false);
-        availableTimeSlot.setUpdatedDate(LocalDateTime.now());
-        timeSlotRepository.save(availableTimeSlot);
-
-        booking.setTimeSlot(availableTimeSlot);
-        return StandardResponse.<BookingEntity>builder().status(Status.SUCCESS).message("Booking successfully updated")
-                .data(bookingRepository.save(booking)).build();
+        return StandardResponse.<String>builder().status(Status.SUCCESS).message("Booking successfully cancelled")
+                .build();
     }
 
     public StandardResponse<String> delete(BookingUpdateDto bookingUpdateDto, Principal principal) {
