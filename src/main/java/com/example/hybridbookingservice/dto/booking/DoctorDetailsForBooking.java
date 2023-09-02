@@ -1,11 +1,13 @@
 package com.example.hybridbookingservice.dto.booking;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class DoctorDetailsForBooking {
     private UUID id;
