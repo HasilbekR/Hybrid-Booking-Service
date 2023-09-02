@@ -19,6 +19,7 @@ spring:
 
 services:
   get-user-id : http://USER-SERVICE/user/send-id
+  get-user-fullName : http://USER-SERVICE/user/send-fullName
   get-user-email : http://USER-SERVICE/user/send-email
 
 

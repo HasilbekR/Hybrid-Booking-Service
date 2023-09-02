@@ -23,6 +23,8 @@ public class UserService {
     private String getUserEmail;
     @Value("${services.get-user-id}")
     private String getUserId;
+    @Value("${services.get-user-fullName}")
+    private String getUserFullName;
 
     public UUID findUserIdByEmail(String email) {
         ExchangeDataDto exchangeDataDto = new ExchangeDataDto(email);
@@ -38,13 +40,19 @@ public class UserService {
         return response.getBody();
     }
     public String  findUserEmailById(UUID userId) {
+        return getUserInfo(userId, getUserEmail);
+    }
+    public String findUserFullName(UUID userId){
+        return getUserInfo(userId, getUserFullName);
+    }
+    public String getUserInfo(UUID userId, String url){
         ExchangeDataDto exchangeDataDto = new ExchangeDataDto(String.valueOf(userId));
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.set("Authorization", "Bearer " + jwtService.generateAccessTokenForService("USER-SERVICE"));
         HttpEntity<ExchangeDataDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
         ResponseEntity<String> response = restTemplate.exchange(
-                URI.create(getUserEmail),
+                URI.create(url),
                 HttpMethod.POST,
                 entity,
                 String.class);

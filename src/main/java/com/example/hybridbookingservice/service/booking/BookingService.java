@@ -84,11 +84,28 @@ public class BookingService {
 
     public StandardResponse<BookingResultsForFront> getUserBookings(UUID userId) {
         BookingResultsForFront bookings = BookingResultsForFront.builder()
-                .upcoming(bookingRepository.getUserUpcomingBookings(userId, BookingStatus.SCHEDULED, BookingStatus.IN_PROGRESS))
-                .past(bookingRepository.getUserPastBookings(userId, BookingStatus.COMPLETED, BookingStatus.DECLINED))
+                .upcoming(mapBooking(bookingRepository.getUserUpcomingBookings(userId, BookingStatus.SCHEDULED, BookingStatus.IN_PROGRESS)))
+                .past(mapBooking(bookingRepository.getUserPastBookings(userId, BookingStatus.COMPLETED, BookingStatus.DECLINED)))
                 .build();
         return StandardResponse.<BookingResultsForFront>builder().status(Status.SUCCESS).message("User's bookings")
                 .data(bookings).build();
+    }
+    public List<BookingResultWithDoctor> mapBooking(List<BookingEntity> bookingEntities){
+        List<BookingResultWithDoctor> upcomingBookings = new ArrayList<>();
+        for (BookingEntity userUpcomingBooking : bookingEntities) {
+            String fullName = userService.findUserFullName(userUpcomingBooking.getTimeSlot().getDoctorId());
+            BookingResultWithDoctor bookingResultWithDoctor = BookingResultWithDoctor.builder()
+                    .doctorId(userUpcomingBooking.getTimeSlot().getDoctorId())
+                    .bookingId(userUpcomingBooking.getId())
+                    .bookingDay(userUpcomingBooking.getTimeSlot().getBookingDay())
+                    .bookingTime(userUpcomingBooking.getTimeSlot().getBookingTime())
+                    .doctorName(fullName)
+                    .weekDay(userUpcomingBooking.getTimeSlot().getBookingDay().getDayOfWeek().toString())
+                    .status(userUpcomingBooking.getStatus())
+                    .build();
+            upcomingBookings.add(bookingResultWithDoctor);
+        }
+        return upcomingBookings;
     }
 
     public StandardResponse<List<BookingEntity>> getDoctorBookings(UUID doctorId) {
