@@ -94,7 +94,7 @@ public class BookingService {
         List<BookingResultWithDoctor> upcomingBookings = new ArrayList<>();
         for (BookingEntity userUpcomingBooking : bookingEntities) {
             DoctorDetailsForBooking doctor = userService.findUserEntity(userUpcomingBooking.getTimeSlot().getDoctorId());
-//            String hospitalAddress = userService.findHospitalAddress(doctor.getHospitalId());
+            String hospitalAddress = userService.findHospitalAddress(doctor.getHospitalId());
             BookingResultWithDoctor bookingResultWithDoctor = BookingResultWithDoctor.builder()
                     .doctorId(userUpcomingBooking.getTimeSlot().getDoctorId())
                     .bookingId(userUpcomingBooking.getId())
@@ -102,7 +102,7 @@ public class BookingService {
                     .bookingTime(userUpcomingBooking.getTimeSlot().getBookingTime())
                     .doctorName(doctor.getFullName())
                     .roomNumber(doctor.getRoomNumber())
-//                    .address(hospitalAddress)
+                    .address(hospitalAddress)
                     .weekDay(userUpcomingBooking.getTimeSlot().getBookingDay().getDayOfWeek().toString())
                     .status(userUpcomingBooking.getStatus())
                     .build();
