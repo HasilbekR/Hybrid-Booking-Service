@@ -43,6 +43,12 @@ public class BookingController {
     ) {
         return bookingService.getUserBookings(userService.findUserIdByEmail(principal.getName()));
     }
+    @GetMapping("/get-booking")
+    public StandardResponse<BookingResultWithDoctor> getBooking(
+            @RequestParam UUID bookingId
+    ){
+        return bookingService.getBooking(bookingId);
+    }
 
     @GetMapping("/{doctorId}/get-doctor-bookings")
     @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")

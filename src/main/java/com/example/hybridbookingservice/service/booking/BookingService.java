@@ -140,4 +140,9 @@ public class BookingService {
         return timeSlotRepository.getWorkingDaysOfDoctor(LocalDate.now(), doctorId);
     }
 
+    public StandardResponse<BookingResultWithDoctor> getBooking(UUID bookingId) {
+        BookingEntity booking = bookingRepository.findById(bookingId).orElseThrow(() -> new DataNotFoundException("Booking not found"));
+        List<BookingResultWithDoctor> bookingResultWithDoctors = mapBooking(List.of(booking));
+        return StandardResponse.<BookingResultWithDoctor>builder().status(Status.SUCCESS).message("User booking").data(bookingResultWithDoctors.get(0)).build();
+    }
 }
