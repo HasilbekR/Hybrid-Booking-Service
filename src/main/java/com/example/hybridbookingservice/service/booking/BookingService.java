@@ -93,13 +93,16 @@ public class BookingService {
     public List<BookingResultWithDoctor> mapBooking(List<BookingEntity> bookingEntities){
         List<BookingResultWithDoctor> upcomingBookings = new ArrayList<>();
         for (BookingEntity userUpcomingBooking : bookingEntities) {
-            String fullName = userService.findUserFullName(userUpcomingBooking.getTimeSlot().getDoctorId());
+            DoctorDetailsForBooking doctor = userService.findUserEntity(userUpcomingBooking.getTimeSlot().getDoctorId());
+            String hospitalAddress = userService.findHospitalAddress(doctor.getHospitalId());
             BookingResultWithDoctor bookingResultWithDoctor = BookingResultWithDoctor.builder()
                     .doctorId(userUpcomingBooking.getTimeSlot().getDoctorId())
                     .bookingId(userUpcomingBooking.getId())
                     .bookingDay(userUpcomingBooking.getTimeSlot().getBookingDay())
                     .bookingTime(userUpcomingBooking.getTimeSlot().getBookingTime())
-                    .doctorName(fullName)
+                    .doctorName(doctor.getFullName())
+                    .roomNumber(doctor.getRoomNumber())
+                    .address(hospitalAddress)
                     .weekDay(userUpcomingBooking.getTimeSlot().getBookingDay().getDayOfWeek().toString())
                     .status(userUpcomingBooking.getStatus())
                     .build();

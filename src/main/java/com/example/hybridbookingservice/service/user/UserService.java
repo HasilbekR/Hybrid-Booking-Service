@@ -1,5 +1,6 @@
 package com.example.hybridbookingservice.service.user;
 
+import com.example.hybridbookingservice.dto.booking.DoctorDetailsForBooking;
 import com.example.hybridbookingservice.dto.request.ExchangeDataDto;
 import com.example.hybridbookingservice.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,10 @@ public class UserService {
     private String getUserEmail;
     @Value("${services.get-user-id}")
     private String getUserId;
-    @Value("${services.get-user-fullName}")
-    private String getUserFullName;
+    @Value("${services.get-doctor}")
+    private String getUserEntity;
+    @Value("${services.get-hospital-address}")
+    private String getHospitalAddress;
 
     public UUID findUserIdByEmail(String email) {
         ExchangeDataDto exchangeDataDto = new ExchangeDataDto(email);
@@ -39,20 +42,35 @@ public class UserService {
                 UUID.class);
         return response.getBody();
     }
-    public String  findUserEmailById(UUID userId) {
-        return getUserInfo(userId, getUserEmail);
+    public String findUserEmailById(UUID userId) {
+        HttpEntity<ExchangeDataDto> entity = getInfoFromService(userId, "USER_SERVICE");
+        ResponseEntity<String> response = restTemplate.exchange(
+                URI.create(getUserEmail),
+                HttpMethod.POST,
+                entity,
+                String.class);
+        return Objects.requireNonNull(response.getBody());
     }
-    public String findUserFullName(UUID userId){
-        return getUserInfo(userId, getUserFullName);
+    public DoctorDetailsForBooking findUserEntity(UUID userId){
+        HttpEntity<ExchangeDataDto> entity = getInfoFromService(userId, "USER-SERVICE");
+        ResponseEntity<DoctorDetailsForBooking> response = restTemplate.exchange(
+                URI.create(getUserEntity),
+                HttpMethod.POST,
+                entity,
+                DoctorDetailsForBooking.class);
+        return Objects.requireNonNull(response.getBody());
     }
-    public String getUserInfo(UUID userId, String url){
-        ExchangeDataDto exchangeDataDto = new ExchangeDataDto(String.valueOf(userId));
+    public HttpEntity<ExchangeDataDto> getInfoFromService(UUID id, String service){
+        ExchangeDataDto exchangeDataDto = new ExchangeDataDto(String.valueOf(id));
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.set("Authorization", "Bearer " + jwtService.generateAccessTokenForService("USER-SERVICE"));
-        HttpEntity<ExchangeDataDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
+        httpHeaders.set("Authorization", "Bearer " + jwtService.generateAccessTokenForService(service));
+        return new HttpEntity<>(exchangeDataDto, httpHeaders);
+    }
+    public String findHospitalAddress(UUID hospitalId){
+        HttpEntity<ExchangeDataDto> entity = getInfoFromService(hospitalId, "HOSPITAL-SERVICE");
         ResponseEntity<String> response = restTemplate.exchange(
-                URI.create(url),
+                URI.create(getHospitalAddress),
                 HttpMethod.POST,
                 entity,
                 String.class);

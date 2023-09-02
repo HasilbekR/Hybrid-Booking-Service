@@ -19,8 +19,9 @@ spring:
 
 services:
   get-user-id : http://USER-SERVICE/user/send-id
-  get-user-fullName : http://USER-SERVICE/user/send-fullName
+  get-doctor : http://USER-SERVICE/user/send-user
   get-user-email : http://USER-SERVICE/user/send-email
+  get-hospital-address : http://HOSPITAL-SERVICE/hospital/send-address
 
 
 eureka:
