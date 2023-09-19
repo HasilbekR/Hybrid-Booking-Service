@@ -22,7 +22,7 @@ public class SecurityConfig {
     private final JwtService jwtService;
 
 
-    private final String[] permitAll = {"/swagger-ui/**", "/v3/api-docs/**", "/hybrid-booking/api/v1/booking/**", "/api/v1/queue/**", "/api/documentation/**"};
+    private final String[] permitAll = {"/swagger-ui/**", "/v3/api-docs/**", "/hybrid-booking/api/v1/booking/**", "/hybrid-booking/api/v1/queue/**", "/api/documentation/**"};
 
 
     @Bean

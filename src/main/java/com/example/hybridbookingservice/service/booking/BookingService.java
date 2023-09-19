@@ -4,10 +4,13 @@ import com.example.hybridbookingservice.dto.booking.BookingDto;
 import com.example.hybridbookingservice.dto.booking.BookingUpdateDto;
 import com.example.hybridbookingservice.dto.booking.TimeSlotRequestDto;
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
+import com.example.hybridbookingservice.entity.booking.BookingStatus;
 import com.example.hybridbookingservice.entity.booking.TimeSlot;
+import com.example.hybridbookingservice.entity.queue.QueueEntityStatus;
 import com.example.hybridbookingservice.exceptions.DataNotFoundException;
 import com.example.hybridbookingservice.repository.booking.BookingRepository;
 import com.example.hybridbookingservice.repository.booking.TimeSlotRepository;
+import com.example.hybridbookingservice.repository.queue.QueueRepository;
 import com.example.hybridbookingservice.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,6 +27,7 @@ import java.util.UUID;
 public class BookingService {
     private final TimeSlotRepository timeSlotRepository;
     private final BookingRepository bookingRepository;
+    private final QueueRepository queueRepository;
     private final UserService userService;
 
     public BookingEntity save(BookingDto bookingDto, Principal principal) {
@@ -33,6 +37,7 @@ public class BookingService {
         BookingEntity booking = BookingEntity.builder()
                 .userId(userId)
                 .timeSlot(timeSlot)
+                .bookingStatus(BookingStatus.ACTIVE)
                 .build();
         timeSlot.setAvailability(false);
         timeSlot.setUpdatedDate(LocalDateTime.now());
@@ -86,4 +91,19 @@ public class BookingService {
         return timeSlotRepository.getDoctorAvailableTimeSlotForTheDay(timeSlotRequestDto.getBookingDay(), timeSlotRequestDto.getDoctorId());
     }
 
+    public Long countDoctorActiveBookings(UUID doctorId) {
+        return bookingRepository.countDoctorBookingEntitiesByBookingStatus(doctorId, BookingStatus.ACTIVE);
+    }
+
+    public Long countDoctorCompletedBookings(UUID doctorId) {
+        return bookingRepository.countDoctorBookingEntitiesByBookingStatus(doctorId, BookingStatus.COMPLETED);
+    }
+
+    public List<BookingEntity> getBookingsByDoctorIdAndBookingStatusActive(UUID doctorId) {
+        return bookingRepository.getBookingsByDoctorIdAndBookingStatus(doctorId, BookingStatus.ACTIVE);
+    }
+
+    public List<BookingEntity> getBookingsByDoctorIdAndBookingStatusComplete(UUID doctorId) {
+        return bookingRepository.getBookingsByDoctorIdAndBookingStatus(doctorId, BookingStatus.COMPLETED);
+    }
 }

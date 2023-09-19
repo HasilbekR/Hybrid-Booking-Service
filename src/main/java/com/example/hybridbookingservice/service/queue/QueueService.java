@@ -96,6 +96,23 @@ public class QueueService {
                 .orElseThrow(() -> new DataNotFoundException("Queue not found"));
     }
 
+    public Long countDoctorActiveQueues(UUID doctorId) {
+        return queueRepository.countDoctorQueuesByBookingStatus(doctorId, QueueEntityStatus.ACTIVE);
+    }
+
+    public Long countDoctorCompletedQueues(UUID doctorId) {
+        return queueRepository.countDoctorQueuesByBookingStatus(doctorId, QueueEntityStatus.COMPLETED);
+    }
+
+    public List<QueueEntity> getQueuesByDoctorIdAndByQueueStatusActive(UUID doctorId) {
+        return queueRepository.getQueuesByDoctorIdAndBookingStatus(doctorId, QueueEntityStatus.ACTIVE);
+    }
+
+    public List<QueueEntity> getQueuesByDoctorIdAndByQueueStatusComplete(UUID doctorId) {
+        return queueRepository.getQueuesByDoctorIdAndBookingStatus(doctorId, QueueEntityStatus.COMPLETED);
+    }
+
+
 //    private void initializeQueueEntity(QueueEntity queueEntity, UUID doctorId) {
 //        LocalDate currentDate = LocalDate.now();
 //        Long lastQueueNumber = queueRepository.findMaxQueueNumberByQueueDateAndDoctorId(currentDate, doctorId);

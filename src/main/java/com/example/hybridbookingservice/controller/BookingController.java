@@ -4,6 +4,8 @@ import com.example.hybridbookingservice.dto.booking.BookingDto;
 import com.example.hybridbookingservice.dto.booking.BookingUpdateDto;
 import com.example.hybridbookingservice.dto.booking.DoctorAvailability;
 import com.example.hybridbookingservice.dto.booking.TimeSlotRequestDto;
+import com.example.hybridbookingservice.dto.request.UserDetailsRequestDto;
+import com.example.hybridbookingservice.dto.request.UserRequestDto;
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
 import com.example.hybridbookingservice.entity.booking.TimeSlot;
 import com.example.hybridbookingservice.exceptions.RequestValidationException;
@@ -107,4 +109,42 @@ public class BookingController {
         timeSlotService.createTimeSlots(doctorAvailability,Duration.of(slotDuration, ChronoUnit.MINUTES));
         return ResponseEntity.ok("successfully created");
     }
+
+    @PostMapping("/count-bookings-by-doctorId-and-bookingStatus-active")
+    public ResponseEntity<Long> getCountBookingsByDoctorIdAndBookingStatusActive(
+            @RequestBody UserDetailsRequestDto userDetailsRequestDto
+    ) {
+        return ResponseEntity.ok(bookingService.countDoctorActiveBookings(UUID.fromString(userDetailsRequestDto.getSource())));
+    }
+
+    @PostMapping("/count-bookings-by-doctorId-and-bookingStatus-complete")
+    public ResponseEntity<Long> getCountBookingsByDoctorIdAndBookingStatusComplete(
+            @RequestBody UserDetailsRequestDto userDetailsRequestDto
+    ) {
+        return ResponseEntity.ok(bookingService.countDoctorCompletedBookings(UUID.fromString(userDetailsRequestDto.getSource())));
+    }
+
+    @PostMapping("/get-bookings-by-doctorId-and-bookingStatus-active")
+    public ResponseEntity<List<BookingEntity>> getBookingsByDoctorIdAndBookingStatusActive(
+            @RequestBody UserDetailsRequestDto userDetailsRequestDto
+    ) {
+        return ResponseEntity.ok(bookingService.getBookingsByDoctorIdAndBookingStatusActive(UUID.fromString(userDetailsRequestDto.getSource())));
+    }
+
+    @PostMapping("/get-bookings-by-doctorId-and-bookingStatus-complete")
+    public ResponseEntity<List<BookingEntity>> getBookingsByDoctorIdAndBookingStatusComplete(
+            @RequestBody UserDetailsRequestDto userDetailsRequestDto
+    ) {
+        return ResponseEntity.ok(bookingService.getBookingsByDoctorIdAndBookingStatusComplete(UUID.fromString(userDetailsRequestDto.getSource())));
+    }
+
+
+    @PostMapping("/get-user-information")
+    public ResponseEntity<UserRequestDto> getUserInformation(
+            @RequestParam UUID userId
+    ) {
+        return ResponseEntity.ok(userService.userInformation(userId));
+    }
+
+
 }

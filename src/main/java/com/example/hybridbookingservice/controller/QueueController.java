@@ -2,6 +2,7 @@ package com.example.hybridbookingservice.controller;
 
 import com.example.hybridbookingservice.dto.queue.QueueCreateDto;
 import com.example.hybridbookingservice.dto.queue.QueueUpdateDto;
+import com.example.hybridbookingservice.dto.request.UserDetailsRequestDto;
 import com.example.hybridbookingservice.entity.queue.QueueEntity;
 import com.example.hybridbookingservice.service.doctor.DoctorService;
 import com.example.hybridbookingservice.service.queue.QueueService;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.UUID;
@@ -62,6 +62,35 @@ public class QueueController {
     ) {
         return ResponseEntity.ok(queueService.cancelQueue(queueId));
     }
+
+    @PostMapping("/count-queues-by-doctorId-and-bookingStatus-active")
+    public ResponseEntity<Long> getCountQueuesByDoctorIdAndBookingStatusActive(
+            @RequestBody UserDetailsRequestDto userDetailsRequestDto
+    ) {
+        return ResponseEntity.ok(queueService.countDoctorActiveQueues(UUID.fromString(userDetailsRequestDto.getSource())));
+    }
+
+    @PostMapping("/count-queues-by-doctorId-and-bookingStatus-complete")
+    public ResponseEntity<Long> getCountQueuesByDoctorIdAndBookingStatusComplete(
+            @RequestBody UserDetailsRequestDto userDetailsRequestDto
+    ) {
+        return ResponseEntity.ok(queueService.countDoctorCompletedQueues(UUID.fromString(userDetailsRequestDto.getSource())));
+    }
+
+    @PostMapping("/get-queues-by-doctorId-and-bookingStatus-active")
+    public ResponseEntity<List<QueueEntity>> getQueuesByDoctorIdAndBookingStatusActive(
+            @RequestBody UserDetailsRequestDto userDetailsRequestDto
+    ) {
+        return ResponseEntity.ok(queueService.getQueuesByDoctorIdAndByQueueStatusActive(UUID.fromString(userDetailsRequestDto.getSource())));
+    }
+
+    @PostMapping("/get-queues-by-doctorId-and-bookingStatus-complete")
+    public ResponseEntity<List<QueueEntity>> getQueuesByDoctorIdAndBookingStatusComplete(
+            @RequestBody UserDetailsRequestDto userDetailsRequestDto
+    ) {
+        return ResponseEntity.ok(queueService.getQueuesByDoctorIdAndByQueueStatusComplete(UUID.fromString(userDetailsRequestDto.getSource())));
+    }
+
 
     @GetMapping("/get-doctor-queues")
     @PreAuthorize("hasRole('ADMIN')")

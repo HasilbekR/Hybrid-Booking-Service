@@ -1,6 +1,7 @@
 package com.example.hybridbookingservice.service.user;
 
 import com.example.hybridbookingservice.dto.request.UserDetailsRequestDto;
+import com.example.hybridbookingservice.dto.request.UserRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -21,6 +22,8 @@ public class UserService {
     private String getUserById;
     @Value("${services.get-by-user-email}")
     private String getUserByEmail;
+    @Value("${services.get-all-users-by-id}")
+    private String getAllUserById;
 
     public UUID findUserIdByEmail(String email) {
         UserDetailsRequestDto userDetailsRequestDto = new UserDetailsRequestDto(email);
@@ -34,7 +37,7 @@ public class UserService {
                 String.class);
         return UUID.fromString(Objects.requireNonNull(response.getBody()));
     }
-    public String  findUserEmailById(UUID userId) {
+    public String findUserEmailById(UUID userId) {
         UserDetailsRequestDto userDetailsRequestDto = new UserDetailsRequestDto(String.valueOf(userId));
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -46,6 +49,35 @@ public class UserService {
                 String.class);
         System.out.println(Objects.requireNonNull(response.getBody()));
         return Objects.requireNonNull(response.getBody());
+    }
+
+    public UserRequestDto userInformation(UUID userId) {
+        UserDetailsRequestDto exchangeDataDto = new UserDetailsRequestDto(userId.toString());
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<UserDetailsRequestDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
+
+        ResponseEntity<UserRequestDto> response = restTemplate.exchange(
+                getAllUserById,
+                HttpMethod.POST,
+                entity,
+                UserRequestDto.class);
+
+        UserRequestDto userEntity = response.getBody();
+
+        UserRequestDto userRequestDto = new UserRequestDto();
+        userRequestDto.setFullName(userEntity.getFullName());
+        userRequestDto.setPassword(userEntity.getPassword());
+        userRequestDto.setPhoneNumber(userEntity.getPhoneNumber());
+        userRequestDto.setEmail(userEntity.getEmail());
+        userRequestDto.setGender(userEntity.getGender());
+        userRequestDto.setDateOfBirth(userEntity.getDateOfBirth());
+        userRequestDto.setUserState(userEntity.getUserState());
+        userRequestDto.setUserReservationState(userEntity.getUserReservationState());
+
+        return userRequestDto;
     }
 
 }
