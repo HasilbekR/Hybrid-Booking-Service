@@ -15,6 +15,12 @@ import java.util.UUID;
 @Repository
 public interface QueueRepository extends JpaRepository<QueueEntity, UUID> {
 
+    @Query("SELECT MAX(q.queueNumber) FROM queues q")
+    Long findMaxQueueNumber();
+
+    @Query("SELECT q FROM queues q WHERE q.userId = :id AND q.queueEntityStatus IS NULL")
+    Optional<QueueEntity> getActiveQueue(@Param("id") UUID userId);
+
     @Modifying
     @Query("UPDATE queues q SET q.queueEntityStatus = :status WHERE q.id = :id")
     void updateQueueEntityStatusById(@Param("status") QueueEntityStatus status, @Param("id") UUID id);
@@ -25,9 +31,5 @@ public interface QueueRepository extends JpaRepository<QueueEntity, UUID> {
     List<QueueEntity> findByDoctorIdAndQueueEntityStatus(UUID doctorId, QueueEntityStatus status);
 
     Optional<QueueEntity> findByUserIdAndQueueEntityStatusIsNull(UUID userId);
-    @Query(value = "select count(q) from queues q where q.doctorId = :doctorId and q.queueEntityStatus = :queueEntityStatus")
-    Long countDoctorQueuesByBookingStatus(@Param("doctorId") UUID doctorId, @Param("queueEntityStatus") QueueEntityStatus queueEntityStatus);
 
-    @Query(value = "select q from queues q where q.doctorId = :doctorId and q.queueEntityStatus = :queueEntityStatus")
-    List<QueueEntity> getQueuesByDoctorIdAndBookingStatus(@Param("doctorId") UUID doctorId, @Param("queueEntityStatus") QueueEntityStatus queueEntityStatus);
 }

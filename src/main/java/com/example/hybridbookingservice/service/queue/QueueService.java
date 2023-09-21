@@ -7,7 +7,6 @@ import com.example.hybridbookingservice.entity.queue.QueueEntity;
 import com.example.hybridbookingservice.entity.queue.QueueEntityStatus;
 import com.example.hybridbookingservice.exceptions.DataNotFoundException;
 import com.example.hybridbookingservice.exceptions.RequestValidationException;
-import com.example.hybridbookingservice.repository.queue.QueueRepository;
 import com.example.hybridbookingservice.service.doctor.DoctorService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
