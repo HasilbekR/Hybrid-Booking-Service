@@ -7,8 +7,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://hospital-db-do-user-14558489-0.b.db.ondigitalocean.com:25060/booking_service_db
-    username: postgres
-    password: 20229
+    username: doadmin
+    password: AVNS_ZsEHpELLbPwTvabmXJN
   jpa:
     hibernate:
       ddl-auto: update
