@@ -1,7 +1,5 @@
 package com.example.hybridbookingservice.repository.queue;
 
-import com.example.hybridbookingservice.entity.booking.BookingEntity;
-import com.example.hybridbookingservice.entity.booking.BookingStatus;
 import com.example.hybridbookingservice.entity.queue.QueueEntity;
 import com.example.hybridbookingservice.entity.queue.QueueEntityStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,12 +14,6 @@ import java.util.Optional;
 import java.util.UUID;
 @Repository
 public interface QueueRepository extends JpaRepository<QueueEntity, UUID> {
-
-    @Query("SELECT MAX(q.queueNumber) FROM queues q")
-    Long findMaxQueueNumber();
-
-    @Query("SELECT q FROM queues q WHERE q.userId = :id AND q.queueEntityStatus IS NULL")
-    Optional<QueueEntity> getActiveQueue(@Param("id") UUID userId);
 
     @Modifying
     @Query("UPDATE queues q SET q.queueEntityStatus = :status WHERE q.id = :id")
