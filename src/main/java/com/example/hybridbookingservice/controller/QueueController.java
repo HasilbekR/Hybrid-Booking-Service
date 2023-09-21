@@ -17,12 +17,11 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/hybrid-booking/api/v1/queue")
+@RequestMapping("/hybrid-booking/queue")
 @RequiredArgsConstructor
 public class QueueController {
 
     private final QueueService queueService;
-    private final DoctorService doctorService;
     @PostMapping("/add-queue")
 //    @PreAuthorize(value = "hasRole('ADMIN')")
     public ResponseEntity<QueueEntity> addQueue(
@@ -61,35 +60,6 @@ public class QueueController {
     ) {
         return ResponseEntity.ok(queueService.cancelQueue(queueId));
     }
-
-    @PostMapping("/count-queues-by-doctorId-and-bookingStatus-active")
-    public ResponseEntity<Long> getCountQueuesByDoctorIdAndBookingStatusActive(
-            @RequestBody UserDetailsRequestDto userDetailsRequestDto
-    ) {
-        return ResponseEntity.ok(queueService.countDoctorActiveQueues(UUID.fromString(userDetailsRequestDto.getSource())));
-    }
-
-    @PostMapping("/count-queues-by-doctorId-and-bookingStatus-complete")
-    public ResponseEntity<Long> getCountQueuesByDoctorIdAndBookingStatusComplete(
-            @RequestBody UserDetailsRequestDto userDetailsRequestDto
-    ) {
-        return ResponseEntity.ok(queueService.countDoctorCompletedQueues(UUID.fromString(userDetailsRequestDto.getSource())));
-    }
-
-    @PostMapping("/get-queues-by-doctorId-and-bookingStatus-active")
-    public ResponseEntity<List<QueueEntity>> getQueuesByDoctorIdAndBookingStatusActive(
-            @RequestBody UserDetailsRequestDto userDetailsRequestDto
-    ) {
-        return ResponseEntity.ok(queueService.getQueuesByDoctorIdAndByQueueStatusActive(UUID.fromString(userDetailsRequestDto.getSource())));
-    }
-
-    @PostMapping("/get-queues-by-doctorId-and-bookingStatus-complete")
-    public ResponseEntity<List<QueueEntity>> getQueuesByDoctorIdAndBookingStatusComplete(
-            @RequestBody UserDetailsRequestDto userDetailsRequestDto
-    ) {
-        return ResponseEntity.ok(queueService.getQueuesByDoctorIdAndByQueueStatusComplete(UUID.fromString(userDetailsRequestDto.getSource())));
-    }
-
 
     @GetMapping("/get-doctor-queues")
     @PreAuthorize("hasRole('ADMIN')")
