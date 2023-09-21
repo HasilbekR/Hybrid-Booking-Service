@@ -1,5 +1,7 @@
 package com.example.hybridbookingservice.repository.queue;
 
+import com.example.hybridbookingservice.entity.booking.BookingEntity;
+import com.example.hybridbookingservice.entity.booking.BookingStatus;
 import com.example.hybridbookingservice.entity.queue.QueueEntity;
 import com.example.hybridbookingservice.entity.queue.QueueEntityStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,5 +33,9 @@ public interface QueueRepository extends JpaRepository<QueueEntity, UUID> {
     List<QueueEntity> findByDoctorIdAndQueueEntityStatus(UUID doctorId, QueueEntityStatus status);
 
     Optional<QueueEntity> findByUserIdAndQueueEntityStatusIsNull(UUID userId);
+    @Query(value = "select count(q) from queues q where q.doctorId = :doctorId and q.queueEntityStatus = :queueEntityStatus")
+    Long countDoctorQueuesByBookingStatus(@Param("doctorId") UUID doctorId, @Param("queueEntityStatus") QueueEntityStatus queueEntityStatus);
 
+    @Query(value = "select q from queues q where q.doctorId = :doctorId and q.queueEntityStatus = :queueEntityStatus")
+    List<QueueEntity> getQueuesByDoctorIdAndBookingStatus(@Param("doctorId") UUID doctorId, @Param("queueEntityStatus") QueueEntityStatus queueEntityStatus);
 }

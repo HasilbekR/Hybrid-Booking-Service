@@ -1,8 +1,7 @@
 package com.example.hybridbookingservice.service.user;
 
-import com.example.hybridbookingservice.dto.booking.DoctorDetailsForBooking;
-import com.example.hybridbookingservice.dto.request.ExchangeDataDto;
-import com.example.hybridbookingservice.service.jwt.JwtService;
+import com.example.hybridbookingservice.dto.request.UserDetailsRequestDto;
+import com.example.hybridbookingservice.dto.request.UserRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -18,63 +17,67 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
     private final RestTemplate restTemplate;
-    private final JwtService jwtService;
 
-    @Value("${services.get-user-email}")
-    private String getUserEmail;
-    @Value("${services.get-user-id}")
-    private String getUserId;
-    @Value("${services.get-doctor}")
-    private String getUserEntity;
-    @Value("${services.get-hospital-address}")
-    private String getHospitalAddress;
+    @Value("${services.get-by-user-id}")
+    private String getUserById;
+    @Value("${services.get-by-user-email}")
+    private String getUserByEmail;
+    @Value("${services.get-all-users-by-id}")
+    private String getAllUserById;
 
     public UUID findUserIdByEmail(String email) {
-        ExchangeDataDto exchangeDataDto = new ExchangeDataDto(email);
+        UserDetailsRequestDto userDetailsRequestDto = new UserDetailsRequestDto(email);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.set("Authorization", "Bearer " + jwtService.generateAccessTokenForService("USER-SERVICE"));
-        HttpEntity<ExchangeDataDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
-        ResponseEntity<UUID> response = restTemplate.exchange(
-                URI.create(getUserId),
+        HttpEntity<UserDetailsRequestDto> entity = new HttpEntity<>(userDetailsRequestDto, httpHeaders);
+        ResponseEntity<String> response = restTemplate.exchange(
+                URI.create(getUserByEmail),
                 HttpMethod.POST,
                 entity,
-                UUID.class);
-        return response.getBody();
+                String.class);
+        return UUID.fromString(Objects.requireNonNull(response.getBody()));
     }
     public String findUserEmailById(UUID userId) {
-        HttpEntity<ExchangeDataDto> entity = getInfoFromService(userId, "USER_SERVICE");
-        ResponseEntity<String> response = restTemplate.exchange(
-                URI.create(getUserEmail),
-                HttpMethod.POST,
-                entity,
-                String.class);
-        return Objects.requireNonNull(response.getBody());
-    }
-    public DoctorDetailsForBooking findUserEntity(UUID userId){
-        HttpEntity<ExchangeDataDto> entity = getInfoFromService(userId, "USER-SERVICE");
-        ResponseEntity<DoctorDetailsForBooking> response = restTemplate.exchange(
-                URI.create(getUserEntity),
-                HttpMethod.POST,
-                entity,
-                DoctorDetailsForBooking.class);
-        return Objects.requireNonNull(response.getBody());
-    }
-    public HttpEntity<ExchangeDataDto> getInfoFromService(UUID id, String service){
-        ExchangeDataDto exchangeDataDto = new ExchangeDataDto(String.valueOf(id));
+        UserDetailsRequestDto userDetailsRequestDto = new UserDetailsRequestDto(String.valueOf(userId));
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.set("Authorization", "Bearer " + jwtService.generateAccessTokenForService(service));
-        return new HttpEntity<>(exchangeDataDto, httpHeaders);
-    }
-    public String findHospitalAddress(UUID hospitalId){
-        HttpEntity<ExchangeDataDto> entity = getInfoFromService(hospitalId, "HOSPITAL-SERVICE");
+        HttpEntity<UserDetailsRequestDto> entity = new HttpEntity<>(userDetailsRequestDto, httpHeaders);
         ResponseEntity<String> response = restTemplate.exchange(
-                URI.create(getHospitalAddress),
+                URI.create(getUserById),
                 HttpMethod.POST,
                 entity,
                 String.class);
+        System.out.println(Objects.requireNonNull(response.getBody()));
         return Objects.requireNonNull(response.getBody());
+    }
+
+    public UserRequestDto userInformation(UUID userId) {
+        UserDetailsRequestDto exchangeDataDto = new UserDetailsRequestDto(userId.toString());
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<UserDetailsRequestDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
+
+        ResponseEntity<UserRequestDto> response = restTemplate.exchange(
+                getAllUserById,
+                HttpMethod.POST,
+                entity,
+                UserRequestDto.class);
+
+        UserRequestDto userEntity = response.getBody();
+
+        UserRequestDto userRequestDto = new UserRequestDto();
+        userRequestDto.setFullName(userEntity.getFullName());
+        userRequestDto.setPassword(userEntity.getPassword());
+        userRequestDto.setPhoneNumber(userEntity.getPhoneNumber());
+        userRequestDto.setEmail(userEntity.getEmail());
+        userRequestDto.setGender(userEntity.getGender());
+        userRequestDto.setDateOfBirth(userEntity.getDateOfBirth());
+        userRequestDto.setUserState(userEntity.getUserState());
+        userRequestDto.setUserReservationState(userEntity.getUserReservationState());
+
+        return userRequestDto;
     }
 
 }
