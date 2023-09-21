@@ -6,11 +6,9 @@ import com.example.hybridbookingservice.dto.booking.TimeSlotRequestDto;
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
 import com.example.hybridbookingservice.entity.booking.BookingStatus;
 import com.example.hybridbookingservice.entity.booking.TimeSlot;
-import com.example.hybridbookingservice.entity.queue.QueueEntityStatus;
 import com.example.hybridbookingservice.exceptions.DataNotFoundException;
 import com.example.hybridbookingservice.repository.booking.BookingRepository;
 import com.example.hybridbookingservice.repository.booking.TimeSlotRepository;
-import com.example.hybridbookingservice.repository.queue.QueueRepository;
 import com.example.hybridbookingservice.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,7 +25,6 @@ import java.util.UUID;
 public class BookingService {
     private final TimeSlotRepository timeSlotRepository;
     private final BookingRepository bookingRepository;
-    private final QueueRepository queueRepository;
     private final UserService userService;
 
     public BookingEntity save(BookingDto bookingDto, Principal principal) {

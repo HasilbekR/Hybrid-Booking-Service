@@ -139,12 +139,4 @@ public class BookingController {
     }
 
 
-    @PostMapping("/get-user-information")
-    public ResponseEntity<UserRequestDto> getUserInformation(
-            @RequestParam UUID userId
-    ) {
-        return ResponseEntity.ok(userService.userInformation(userId));
-    }
-
-
 }

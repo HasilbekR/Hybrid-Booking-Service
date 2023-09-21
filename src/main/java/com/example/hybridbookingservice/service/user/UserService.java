@@ -22,9 +22,6 @@ public class UserService {
     private String getUserById;
     @Value("${services.get-by-user-email}")
     private String getUserByEmail;
-    @Value("${services.get-all-users-by-id}")
-    private String getAllUserById;
-
     public UUID findUserIdByEmail(String email) {
         UserDetailsRequestDto userDetailsRequestDto = new UserDetailsRequestDto(email);
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -51,33 +48,34 @@ public class UserService {
         return Objects.requireNonNull(response.getBody());
     }
 
-    public UserRequestDto userInformation(UUID userId) {
-        UserDetailsRequestDto exchangeDataDto = new UserDetailsRequestDto(userId.toString());
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<UserDetailsRequestDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
-
-        ResponseEntity<UserRequestDto> response = restTemplate.exchange(
-                getAllUserById,
-                HttpMethod.POST,
-                entity,
-                UserRequestDto.class);
-
-        UserRequestDto userEntity = response.getBody();
-
-        UserRequestDto userRequestDto = new UserRequestDto();
-        userRequestDto.setFullName(userEntity.getFullName());
-        userRequestDto.setPassword(userEntity.getPassword());
-        userRequestDto.setPhoneNumber(userEntity.getPhoneNumber());
-        userRequestDto.setEmail(userEntity.getEmail());
-        userRequestDto.setGender(userEntity.getGender());
-        userRequestDto.setDateOfBirth(userEntity.getDateOfBirth());
-        userRequestDto.setUserState(userEntity.getUserState());
-        userRequestDto.setUserReservationState(userEntity.getUserReservationState());
-
-        return userRequestDto;
-    }
+//    public UserRequestDto userInformation(UUID userId) {
+//        UserDetailsRequestDto exchangeDataDto = new UserDetailsRequestDto(userId.toString());
+//
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+//
+//        HttpEntity<UserDetailsRequestDto> entity = new HttpEntity<>(exchangeDataDto, httpHeaders);
+//
+//        ResponseEntity<UserRequestDto> response = restTemplate.exchange(
+//                getAllUserById,
+//                HttpMethod.POST,
+//                entity,
+//                UserRequestDto.class);
+//
+//        UserRequestDto userEntity = response.getBody();
+//
+//        UserRequestDto userRequestDto = new UserRequestDto();
+//        assert userEntity != null;
+//        userRequestDto.setFullName(userEntity.getFullName());
+//        userRequestDto.setPassword(userEntity.getPassword());
+//        userRequestDto.setPhoneNumber(userEntity.getPhoneNumber());
+//        userRequestDto.setEmail(userEntity.getEmail());
+//        userRequestDto.setGender(userEntity.getGender());
+//        userRequestDto.setDateOfBirth(userEntity.getDateOfBirth());
+//        userRequestDto.setUserState(userEntity.getUserState());
+//        userRequestDto.setUserReservationState(userEntity.getUserReservationState());
+//
+//        return userRequestDto;
+//    }
 
 }

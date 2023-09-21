@@ -2,7 +2,6 @@ package com.example.hybridbookingservice.repository.booking;
 
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
 import com.example.hybridbookingservice.entity.booking.BookingStatus;
-import com.example.hybridbookingservice.entity.queue.QueueEntityStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
