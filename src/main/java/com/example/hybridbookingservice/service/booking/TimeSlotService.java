@@ -6,6 +6,7 @@ import com.example.hybridbookingservice.dto.response.Status;
 import com.example.hybridbookingservice.entity.booking.TimeSlot;
 import com.example.hybridbookingservice.exceptions.DataNotFoundException;
 import com.example.hybridbookingservice.exceptions.RequestValidationException;
+import com.example.hybridbookingservice.repository.booking.TimeSlotRepository;
 import com.example.hybridbookingservice.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

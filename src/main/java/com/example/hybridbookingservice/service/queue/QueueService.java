@@ -7,6 +7,7 @@ import com.example.hybridbookingservice.entity.queue.QueueEntity;
 import com.example.hybridbookingservice.entity.queue.QueueEntityStatus;
 import com.example.hybridbookingservice.exceptions.DataNotFoundException;
 import com.example.hybridbookingservice.exceptions.RequestValidationException;
+import com.example.hybridbookingservice.repository.queue.QueueRepository;
 import com.example.hybridbookingservice.service.doctor.DoctorService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -93,22 +94,6 @@ public class QueueService {
     private QueueEntity getQueueById(UUID queueId) {
         return queueRepository.findById(queueId)
                 .orElseThrow(() -> new DataNotFoundException("Queue not found"));
-    }
-
-    public Long countDoctorActiveQueues(UUID doctorId) {
-        return queueRepository.countDoctorQueuesByBookingStatus(doctorId, QueueEntityStatus.ACTIVE);
-    }
-
-    public Long countDoctorCompletedQueues(UUID doctorId) {
-        return queueRepository.countDoctorQueuesByBookingStatus(doctorId, QueueEntityStatus.COMPLETED);
-    }
-
-    public List<QueueEntity> getQueuesByDoctorIdAndByQueueStatusActive(UUID doctorId) {
-        return queueRepository.getQueuesByDoctorIdAndBookingStatus(doctorId, QueueEntityStatus.ACTIVE);
-    }
-
-    public List<QueueEntity> getQueuesByDoctorIdAndByQueueStatusComplete(UUID doctorId) {
-        return queueRepository.getQueuesByDoctorIdAndBookingStatus(doctorId, QueueEntityStatus.COMPLETED);
     }
 
 
