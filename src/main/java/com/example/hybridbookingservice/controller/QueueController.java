@@ -2,7 +2,6 @@ package com.example.hybridbookingservice.controller;
 
 import com.example.hybridbookingservice.dto.queue.QueueCreateDto;
 import com.example.hybridbookingservice.dto.queue.QueueUpdateDto;
-import com.example.hybridbookingservice.dto.request.UserDetailsRequestDto;
 import com.example.hybridbookingservice.entity.queue.QueueEntity;
 import com.example.hybridbookingservice.service.doctor.DoctorService;
 import com.example.hybridbookingservice.service.queue.QueueService;
