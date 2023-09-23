@@ -2,9 +2,6 @@ package com.example.hybridbookingservice.dto.queue;
 
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.UUID;
-
 @Data
 @Builder
 public class QueueResultForFront {
@@ -16,7 +13,4 @@ public class QueueResultForFront {
     private String roomNumber;
     private String specialty;
     private String address;
-
-    public QueueResultForFront() {
-    }
 }
