@@ -16,6 +16,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQL92Dialect
 
 services:
   get-user-id : http://USER-SERVICE/user/send-id
