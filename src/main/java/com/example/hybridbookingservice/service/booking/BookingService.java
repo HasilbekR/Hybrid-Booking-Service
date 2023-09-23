@@ -88,7 +88,7 @@ public class BookingService {
     public List<BookingResultWithDoctor> mapBooking(List<BookingEntity> bookingEntities){
         List<BookingResultWithDoctor> upcomingBookings = new ArrayList<>();
         for (BookingEntity userUpcomingBooking : bookingEntities) {
-            DoctorDetailsForBooking doctor = userService.findUserEntity(userUpcomingBooking.getTimeSlot().getDoctorId());
+            DoctorDetailsForBooking doctor = userService.findDoctor(userUpcomingBooking.getTimeSlot().getDoctorId());
             String hospitalAddress = userService.findHospitalAddress(doctor.getHospitalId());
             BookingResultWithDoctor bookingResultWithDoctor = BookingResultWithDoctor.builder()
                     .doctorId(userUpcomingBooking.getTimeSlot().getDoctorId())

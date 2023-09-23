@@ -1,14 +1,20 @@
 package com.example.hybridbookingservice.service.queue;
 
+import com.example.hybridbookingservice.dto.booking.DoctorDetailsForBooking;
 import com.example.hybridbookingservice.dto.queue.QueueCreateDto;
+import com.example.hybridbookingservice.dto.queue.QueueResultForFront;
 import com.example.hybridbookingservice.dto.queue.QueueUpdateDto;
+import com.example.hybridbookingservice.dto.queue.UserDetailsForQueue;
 import com.example.hybridbookingservice.dto.request.DoctorRequestDto;
+import com.example.hybridbookingservice.dto.response.StandardResponse;
+import com.example.hybridbookingservice.dto.response.Status;
 import com.example.hybridbookingservice.entity.queue.QueueEntity;
 import com.example.hybridbookingservice.entity.queue.QueueEntityStatus;
 import com.example.hybridbookingservice.exceptions.DataNotFoundException;
 import com.example.hybridbookingservice.exceptions.RequestValidationException;
 import com.example.hybridbookingservice.repository.queue.QueueRepository;
 import com.example.hybridbookingservice.service.doctor.DoctorService;
+import com.example.hybridbookingservice.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -27,9 +33,13 @@ public class QueueService {
 
     private final QueueRepository queueRepository;
     private final DoctorService doctorService;
+    private final UserService userService;
     private final ModelMapper modelMapper;
 
-    public QueueEntity addQueue(QueueCreateDto queueCreateDto, BindingResult bindingResult) {
+    public StandardResponse<QueueResultForFront> addQueue(QueueCreateDto queueCreateDto, BindingResult bindingResult) {
+        UserDetailsForQueue user = userService.findUser(queueCreateDto.getUserId());
+        DoctorDetailsForBooking doctor = userService.findDoctor(queueCreateDto.getDoctorId());
+        String hospitalAddress = userService.findHospitalAddress(doctor.getHospitalId());
         if (bindingResult.hasErrors()) {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             throw new RequestValidationException(allErrors);
@@ -46,29 +56,52 @@ public class QueueService {
         }
 
         Long newQueueNumber = lastQueueNumber + 1;
-        queueEntity.setQueueNumber(newQueueNumber);
-        queueEntity.setQueueEntityStatus(QueueEntityStatus.ACTIVE);
-        queueEntity.setQueueDate(currentDate);
-        return queueRepository.save(queueEntity);
+        QueueResultForFront queueResultForFront = QueueResultForFront.builder()
+                .userName(user.getName())
+                .doctorName(doctor.getFullName())
+                .queueCreatedDate(String.valueOf(queueEntity.getCreatedDate()))
+                .queueCreatedTime(queueEntity.getCreatedDate().toLocalTime().toString())
+                .roomNumber(doctor.getRoomNumber())
+                .specialty(doctor.getSpecialty())
+                .address(hospitalAddress)
+                .build();
+
+        return StandardResponse.<QueueResultForFront>builder()
+                .status(Status.SUCCESS).message("Queue information").data(queueResultForFront).build();
     }
 
-    public QueueEntity editQueueInformation(UUID queueId, QueueUpdateDto queueUpdateDto, BindingResult bindingResult) {
+    public StandardResponse<QueueEntity> editQueueInformation(UUID queueId, QueueUpdateDto queueUpdateDto, BindingResult bindingResult) {
         validateBindingResult(bindingResult);
 
         QueueEntity queueEntity = getQueueById(queueId);
         modelMapper.map(queueUpdateDto, queueEntity);
 
-        return queueRepository.save(queueEntity);
+        return StandardResponse.<QueueEntity>
+                builder()
+                .status(Status.ERROR)
+                .message("Edit queue information successfully updated")
+                .data(queueRepository.save(queueEntity))
+                .build();
     }
 
-    public QueueEntity getById(UUID queueId) {
-        return getQueueById(queueId);
+    public StandardResponse<QueueEntity> getById(UUID queueId) {
+        return StandardResponse.<QueueEntity>
+                builder()
+                .status(Status.SUCCESS)
+                .message("Queue information by id")
+                .data(getQueueById(queueId))
+                .build();
     }
 
-    public QueueEntity cancelQueue(UUID queueId) {
+    public StandardResponse<QueueEntity> cancelQueue(UUID queueId) {
         QueueEntity queueForCancel = getQueueById(queueId);
         queueForCancel.setQueueEntityStatus(QueueEntityStatus.SKIPPED);
-        return queueRepository.save(queueForCancel);
+        return StandardResponse.<QueueEntity>
+                builder()
+                .status(Status.SUCCESS)
+                .message("Queue cancelled")
+                .data(queueRepository.save(queueForCancel))
+                .build();
     }
 
     public Optional<QueueEntity> getActiveQueueByUserIdAndStatusIsNull(UUID userId) {

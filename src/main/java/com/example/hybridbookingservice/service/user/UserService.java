@@ -1,6 +1,7 @@
 package com.example.hybridbookingservice.service.user;
 
 import com.example.hybridbookingservice.dto.booking.DoctorDetailsForBooking;
+import com.example.hybridbookingservice.dto.queue.UserDetailsForQueue;
 import com.example.hybridbookingservice.dto.request.ExchangeDataDto;
 import com.example.hybridbookingservice.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,8 @@ public class UserService {
     private String getUserId;
     @Value("${services.get-doctor}")
     private String getUserEntity;
+    @Value("${services.get-user}")
+    private String getUser;
     @Value("${services.get-hospital-address}")
     private String getHospitalAddress;
 
@@ -51,7 +54,7 @@ public class UserService {
                 String.class);
         return Objects.requireNonNull(response.getBody());
     }
-    public DoctorDetailsForBooking findUserEntity(UUID userId){
+    public DoctorDetailsForBooking findDoctor(UUID userId){
         HttpEntity<ExchangeDataDto> entity = getInfoFromService(userId, "USER-SERVICE");
         ResponseEntity<DoctorDetailsForBooking> response = restTemplate.exchange(
                 URI.create(getUserEntity),
@@ -60,6 +63,18 @@ public class UserService {
                 DoctorDetailsForBooking.class);
         return Objects.requireNonNull(response.getBody());
     }
+
+    public UserDetailsForQueue findUser(UUID userId){
+        HttpEntity<ExchangeDataDto> entity = getInfoFromService(userId, "USER-SERVICE");
+        ResponseEntity<UserDetailsForQueue> response = restTemplate.exchange(
+                URI.create(getUserEntity),
+                HttpMethod.POST,
+                entity,
+                UserDetailsForQueue.class);
+        return Objects.requireNonNull(response.getBody());
+    }
+
+
     public HttpEntity<ExchangeDataDto> getInfoFromService(UUID id, String service){
         ExchangeDataDto exchangeDataDto = new ExchangeDataDto(String.valueOf(id));
         HttpHeaders httpHeaders = new HttpHeaders();
