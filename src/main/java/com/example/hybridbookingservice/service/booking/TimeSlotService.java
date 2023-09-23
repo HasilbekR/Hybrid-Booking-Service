@@ -14,6 +14,8 @@ import org.springframework.validation.BindingResult;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +26,24 @@ public class TimeSlotService {
         if (bindingResult.hasErrors()) {
             throw new RequestValidationException(bindingResult.getAllErrors());
         }
+        List<TimeSlot> existingTimeSlots = timeSlotRepository.getDoctorTimeSlotsForTheDay(doctorAvailability.getDay(), doctorAvailability.getDoctorId());
+        List<TimeSlot> newTimeSlots = new LinkedList<>();
+
         LocalTime currentTime = doctorAvailability.getStartingTime();
         String userEmailById = userService.findUserEmailById(doctorAvailability.getDoctorId());
         if (userEmailById == null) throw new DataNotFoundException("Doctor not found");
 
         while (currentTime.isBefore(doctorAvailability.getEndingTime())) {
-            TimeSlot timeSlot = new TimeSlot(doctorAvailability.getDay(), currentTime, true, doctorAvailability.getDoctorId());
-            timeSlotRepository.save(timeSlot);
+            LocalTime finalCurrentTime = currentTime;
+            boolean timeSlotExists = existingTimeSlots.stream()
+                    .anyMatch(slot -> slot.getBookingDay().equals(doctorAvailability.getDay()) && slot.getBookingTime().equals(finalCurrentTime));
+            if(!timeSlotExists) {
+                TimeSlot timeSlot = new TimeSlot(doctorAvailability.getDay(), currentTime, true, doctorAvailability.getDoctorId());
+                newTimeSlots.add(timeSlot);
+            }
             currentTime = currentTime.plus(slotDuration);
         }
+        timeSlotRepository.saveAll(newTimeSlots);
         return StandardResponse.<String>builder().status(Status.SUCCESS).message("Time slots successfully created for "+doctorAvailability.getDay())
                 .build();
     }

@@ -43,6 +43,12 @@ public class BookingController {
     ) {
         return bookingService.getUserBookings(userService.findUserIdByEmail(principal.getName()));
     }
+    @GetMapping("/get-booking")
+    public StandardResponse<BookingResultWithDoctor> getBooking(
+            @RequestParam UUID bookingId
+    ){
+        return bookingService.getBooking(bookingId);
+    }
 
     @GetMapping("/{doctorId}/get-doctor-bookings")
     @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
@@ -65,17 +71,12 @@ public class BookingController {
         return bookingService.save(bookingDto, principal);
     }
 
-    @PostMapping("/update")
-    public StandardResponse<BookingEntity> update(
-            @Valid @RequestBody BookingUpdateDto bookingUpdateDto,
-            BindingResult bindingResult,
+    @GetMapping("/cancel")
+    public StandardResponse<String> cancel(
+            @RequestParam UUID bookingId,
             Principal principal
     ) throws RequestValidationException {
-        if (bindingResult.hasErrors()) {
-            List<ObjectError> allErrors = bindingResult.getAllErrors();
-            throw new RequestValidationException(allErrors);
-        }
-        return bookingService.update(bookingUpdateDto, principal);
+        return bookingService.cancel(bookingId, principal);
     }
 
     @DeleteMapping("/delete")
