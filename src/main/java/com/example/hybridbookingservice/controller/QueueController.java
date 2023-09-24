@@ -24,7 +24,7 @@ public class QueueController {
 
     private final QueueService queueService;
     @PostMapping("/add-queue")
-//    @PreAuthorize(value = "hasRole('ADMIN')")
+    @PreAuthorize(value = "hasRole('ADMIN')")
     public StandardResponse<QueueResultForFront> addQueue(
 
             @Valid @RequestBody QueueCreateDto queueCreateDto,
