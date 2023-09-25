@@ -54,7 +54,7 @@ public class QueueService {
         if (lastQueueNumber == null) {
             lastQueueNumber = 0L;
         }
-
+        queueRepository.save(queueEntity);
         Long newQueueNumber = lastQueueNumber + 1;
         QueueResultForFront queueResultForFront = QueueResultForFront.builder()
                 .userName(user.getName())
