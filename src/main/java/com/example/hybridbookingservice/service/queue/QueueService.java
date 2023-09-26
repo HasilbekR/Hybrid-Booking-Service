@@ -64,7 +64,7 @@ public class QueueService {
         // Increment the queue number
         Long newQueueNumber = lastQueueNumber + 1;
         queueEntity.setQueueNumber(newQueueNumber);
-        queueEntity.setCreatedDate(LocalDateTime.now());
+        queueEntity.setQueueDate(LocalDate.from(LocalDateTime.now()));
         queueRepository.save(queueEntity);
 
         List<QueueResultForFront> queueResultForFrontList = new ArrayList<>();
