@@ -25,7 +25,8 @@ public interface QueueRepository extends JpaRepository<QueueEntity, UUID> {
     @Query("UPDATE queues q SET q.queueEntityStatus = :status WHERE q.id = :id")
     void updateQueueEntityStatusById(@Param("status") QueueEntityStatus status, @Param("id") UUID id);
 
-    QueueEntity findTopByQueueDateAndDoctorIdOrderByQueueNumberDesc(LocalDate queueDate, UUID doctorId);
+    @Query("SELECT COALESCE(MAX(q.queueNumber), 0) FROM queues q WHERE q.queueDate = :date AND q.doctorId = :doctorId")
+    Long findMaxQueueNumberByQueueDateAndDoctorId(@Param("date") LocalDate date, @Param("doctorId") UUID doctorId);
 
     List<QueueEntity> findByDoctorIdAndQueueEntityStatus(UUID doctorId, QueueEntityStatus status);
 
