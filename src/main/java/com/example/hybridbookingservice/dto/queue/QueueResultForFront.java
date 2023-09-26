@@ -13,4 +13,5 @@ public class QueueResultForFront {
     private String roomNumber;
     private String specialty;
     private String address;
+    private String queueNumber;
 }

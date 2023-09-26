@@ -23,6 +23,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,37 +39,52 @@ public class QueueService {
     private final ModelMapper modelMapper;
 
     public StandardResponse<QueueResultForFront> addQueue(QueueCreateDto queueCreateDto, BindingResult bindingResult) {
-        UserDetailsForQueue user = userService.findUser(queueCreateDto.getUserId());
-        DoctorDetailsForBooking doctor = userService.findDoctor(queueCreateDto.getDoctorId());
-        String hospitalAddress = userService.findHospitalAddress(doctor.getHospitalId());
+        // Check for validation errors
         if (bindingResult.hasErrors()) {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             throw new RequestValidationException(allErrors);
         }
 
+        // Retrieve user and doctor details
+        UserDetailsForQueue user = userService.findUser(queueCreateDto.getUserId());
+        DoctorDetailsForBooking doctor = userService.findDoctor(queueCreateDto.getDoctorId());
+
+        // Retrieve hospital address
+        String hospitalAddress = userService.findHospitalAddress(doctor.getHospitalId());
+
+        // Create and save the queue entity
         QueueEntity queueEntity = modelMapper.map(queueCreateDto, QueueEntity.class);
-
         LocalDate currentDate = LocalDate.now();
-
         Long lastQueueNumber = queueRepository.findMaxQueueNumberByQueueDateAndDoctorId(currentDate, queueCreateDto.getDoctorId());
 
         if (lastQueueNumber == null) {
             lastQueueNumber = 0L;
         }
-        queueRepository.save(queueEntity);
+
+        // Increment the queue number
         Long newQueueNumber = lastQueueNumber + 1;
-        QueueResultForFront queueResultForFront = QueueResultForFront.builder()
-                .userName(user.getName())
-                .doctorName(doctor.getFullName())
-                .queueCreatedDate(String.valueOf(queueEntity.getCreatedDate()))
-                .queueCreatedTime(queueEntity.getCreatedDate().toLocalTime().toString())
-                .roomNumber(doctor.getRoomNumber())
-                .specialty(doctor.getSpecialty())
-                .address(hospitalAddress)
-                .build();
+        queueEntity.setQueueNumber(newQueueNumber);
+        queueEntity.setCreatedDate(LocalDateTime.now());
+        queueRepository.save(queueEntity);
+
+        List<QueueResultForFront> queueResultForFrontList = new ArrayList<>();
+        // Prepare the response
+
 
         return StandardResponse.<QueueResultForFront>builder()
-                .status(Status.SUCCESS).message("Queue information").data(queueResultForFront).build();
+                .status(Status.SUCCESS)
+                .message("Queue information")
+                .data(QueueResultForFront.builder()
+                        .userName(user.getName())
+                        .doctorName(doctor.getFullName())
+                        .queueCreatedDate(String.valueOf(queueEntity.getCreatedDate()))
+                        .queueCreatedTime(queueEntity.getCreatedDate().toLocalTime().toString())
+                        .roomNumber(doctor.getRoomNumber())
+                        .specialty(doctor.getSpecialty())
+                        .address(hospitalAddress)
+                        .queueNumber(String.valueOf(newQueueNumber)) // Include the queue number in the response
+                        .build())
+                .build();
     }
 
     public StandardResponse<QueueEntity> editQueueInformation(UUID queueId, QueueUpdateDto queueUpdateDto, BindingResult bindingResult) {
