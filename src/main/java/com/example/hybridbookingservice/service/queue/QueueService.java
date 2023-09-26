@@ -55,18 +55,14 @@ public class QueueService {
         // Create and save the queue entity
         QueueEntity queueEntity = modelMapper.map(queueCreateDto, QueueEntity.class);
         LocalDate currentDate = LocalDate.now();
-        QueueEntity lastQueueNumber = queueRepository.findTopByQueueDateAndDoctorIdOrderByQueueNumberDesc(currentDate, queueCreateDto.getDoctorId());
+        Long lastQueueNumber = queueRepository.findMaxQueueNumberByQueueDateAndDoctorId(currentDate, queueCreateDto.getDoctorId());
 
-        long newQueueNumber;
-
-        if (lastQueueNumber == null) {
-            // No queue entry for the current date, start from 1
-            newQueueNumber = 1;
-        } else {
-            // Increment the queue number
-            newQueueNumber = lastQueueNumber.getQueueNumber() + 1;
+        if (lastQueueNumber == null || lastQueueNumber < 1) {
+            lastQueueNumber = 0L;
         }
 
+        // Increment the queue number
+        Long newQueueNumber = lastQueueNumber + 1;
         queueEntity.setQueueNumber(newQueueNumber);
         queueEntity.setQueueDate(currentDate);
         queueEntity.setQueueEntityStatus(QueueEntityStatus.ACTIVE);
