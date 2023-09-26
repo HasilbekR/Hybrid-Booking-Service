@@ -67,7 +67,7 @@ public class UserService {
     public UserDetailsForQueue findUser(UUID userId){
         HttpEntity<ExchangeDataDto> entity = getInfoFromService(userId, "USER-SERVICE");
         ResponseEntity<UserDetailsForQueue> response = restTemplate.exchange(
-                URI.create(getUserEntity),
+                URI.create(getUser),
                 HttpMethod.POST,
                 entity,
                 UserDetailsForQueue.class);
