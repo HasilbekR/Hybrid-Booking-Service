@@ -52,17 +52,23 @@ public class QueueService {
         // Retrieve hospital address
         String hospitalAddress = userService.findHospitalAddress(doctor.getHospitalId());
 
-        // Create and save the queue entity
-        QueueEntity queueEntity = modelMapper.map(queueCreateDto, QueueEntity.class);
+        // Get the current date
         LocalDate currentDate = LocalDate.now();
-        Long lastQueueNumber = queueRepository.findMaxQueueNumberByQueueDateAndDoctorId(currentDate, queueCreateDto.getDoctorId());
 
-        if (lastQueueNumber == null || lastQueueNumber < 1) {
-            lastQueueNumber = 0L;
+        // Check if it's a new day
+        if (isNewDay(currentDate, queueCreateDto.getDoctorId())) {
+            // If it's a new day, reset the queue number to 1
+            resetQueueNumber(currentDate, queueCreateDto.getDoctorId());
         }
 
+        // Get the current queue number
+        Long newQueueNumber = getCurrentQueueNumber(currentDate, queueCreateDto.getDoctorId());
+
         // Increment the queue number
-        Long newQueueNumber = lastQueueNumber + 1;
+        newQueueNumber++;
+
+        // Create and save the queue entity
+        QueueEntity queueEntity = modelMapper.map(queueCreateDto, QueueEntity.class);
         queueEntity.setQueueNumber(newQueueNumber);
         queueEntity.setQueueDate(currentDate);
         queueEntity.setQueueEntityStatus(QueueEntityStatus.ACTIVE);
@@ -70,7 +76,6 @@ public class QueueService {
 
         List<QueueResultForFront> queueResultForFrontList = new ArrayList<>();
         // Prepare the response
-
 
         return StandardResponse.<QueueResultForFront>builder()
                 .status(Status.SUCCESS)
@@ -87,6 +92,26 @@ public class QueueService {
                         .build())
                 .build();
     }
+
+    private boolean isNewDay(LocalDate currentDate, UUID doctorId) {
+        // Check if the queue for the given doctor on the current date already exists
+        return queueRepository.existsByQueueDateAndDoctorId(currentDate, doctorId);
+    }
+
+    private void resetQueueNumber(LocalDate currentDate, UUID doctorId) {
+        // Reset the queue number to 1 for the new day
+        queueRepository.deleteByQueueDateAndDoctorId(currentDate, doctorId);
+    }
+
+    private Long getCurrentQueueNumber(LocalDate currentDate, UUID doctorId) {
+        // Get the current queue number for the doctor on the current date
+        Long lastQueueNumber = queueRepository.findMaxQueueNumberByQueueDateAndDoctorId(currentDate, doctorId);
+        if (lastQueueNumber == null) {
+            return 0L;
+        }
+        return lastQueueNumber;
+    }
+
 
     public StandardResponse<QueueEntity> editQueueInformation(UUID queueId, QueueUpdateDto queueUpdateDto, BindingResult bindingResult) {
         validateBindingResult(bindingResult);

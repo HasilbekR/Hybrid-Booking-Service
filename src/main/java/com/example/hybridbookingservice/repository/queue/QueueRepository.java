@@ -36,6 +36,13 @@ public interface QueueRepository extends JpaRepository<QueueEntity, UUID> {
     Long countDoctorQueuesByStatus(@Param("doctorId") UUID doctorId, @Param("queueEntityStatus") QueueEntityStatus queueEntityStatus);
 
 
+    // Define a method to delete queues by date and doctor ID
+    void deleteByQueueDateAndDoctorId(LocalDate queueDate, UUID doctorId);
+
+    // Define a method to check if queues exist by date and doctor ID
+    boolean existsByQueueDateAndDoctorId(LocalDate queueDate, UUID doctorId);
+
+
 
 
 
