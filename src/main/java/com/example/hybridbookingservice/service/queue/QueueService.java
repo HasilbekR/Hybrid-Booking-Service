@@ -94,10 +94,9 @@ public class QueueService {
                 .build();
     }
 
-
     private boolean isNewDay(LocalDate currentDate, UUID doctorId) {
         // Check if the queue for the given doctor on the current date already exists
-        return queueRepository.existsByQueueDateAndDoctorId(currentDate, doctorId);
+        return !queueRepository.existsByQueueDateAndDoctorId(currentDate, doctorId);
     }
 
     @Transactional
@@ -106,14 +105,12 @@ public class QueueService {
         queueRepository.deleteByQueueDateAndDoctorId(currentDate, doctorId);
     }
 
-    private Long getCurrentQueueNumber(LocalDate currentDate, UUID doctorId) {
+    public Long getCurrentQueueNumber(LocalDate currentDate, UUID doctorId) {
         // Get the current queue number for the doctor on the current date
         Long lastQueueNumber = queueRepository.findMaxQueueNumberByQueueDateAndDoctorId(currentDate, doctorId);
-        if (lastQueueNumber == null) {
-            return 0L;
-        }
-        return lastQueueNumber;
+        return (lastQueueNumber != null) ? lastQueueNumber + 1 : 1L;
     }
+
 
 
     public StandardResponse<QueueEntity> editQueueInformation(UUID queueId, QueueUpdateDto queueUpdateDto, BindingResult bindingResult) {
