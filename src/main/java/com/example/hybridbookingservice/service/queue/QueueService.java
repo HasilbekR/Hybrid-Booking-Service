@@ -37,7 +37,7 @@ public class QueueService {
     private final DoctorService doctorService;
     private final UserService userService;
     private final ModelMapper modelMapper;
-
+    @Transactional
     public StandardResponse<QueueResultForFront> addQueue(QueueCreateDto queueCreateDto, BindingResult bindingResult) {
         // Check for validation errors
         if (bindingResult.hasErrors()) {
