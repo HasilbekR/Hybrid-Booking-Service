@@ -98,7 +98,8 @@ public class QueueService {
         return queueRepository.existsByQueueDateAndDoctorId(currentDate, doctorId);
     }
 
-    private void resetQueueNumber(LocalDate currentDate, UUID doctorId) {
+    @Transactional
+    public void resetQueueNumber(LocalDate currentDate, UUID doctorId) {
         // Reset the queue number to 1 for the new day
         queueRepository.deleteByQueueDateAndDoctorId(currentDate, doctorId);
     }
