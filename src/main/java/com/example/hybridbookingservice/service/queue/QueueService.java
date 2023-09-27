@@ -55,7 +55,7 @@ public class QueueService {
         // Create and save the queue entity
         QueueEntity queueEntity = modelMapper.map(queueCreateDto, QueueEntity.class);
         LocalDate currentDate = LocalDate.now();
-        QueueEntity lastQueueNumber = queueRepository.findMaxQueueNumberByQueueDateAndDoctorId(currentDate, queueCreateDto.getDoctorId());
+        QueueEntity lastQueueNumber = queueRepository.findTopByQueueDateAndDoctorIdOrderByQueueNumberDesc(currentDate, queueCreateDto.getDoctorId());
 
         long newQueueNumber;
 
