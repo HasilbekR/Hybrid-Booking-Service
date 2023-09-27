@@ -106,6 +106,8 @@ public class BookingService {
         return upcomingBookings;
     }
 
+
+
     public StandardResponse<List<BookingEntity>> getDoctorBookings(UUID doctorId) {
         return StandardResponse.<List<BookingEntity>>builder().status(Status.SUCCESS)
                 .message("Doctor's booking list")
@@ -139,5 +141,13 @@ public class BookingService {
         BookingEntity booking = bookingRepository.findById(bookingId).orElseThrow(() -> new DataNotFoundException("Booking not found"));
         List<BookingResultWithDoctor> bookingResultWithDoctors = mapBooking(List.of(booking));
         return StandardResponse.<BookingResultWithDoctor>builder().status(Status.SUCCESS).message("User booking").data(bookingResultWithDoctors.get(0)).build();
+    }
+
+    public Long countDoctorBookingsStatusActive(UUID doctorId) {
+       return bookingRepository.countDoctorQueuesByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
+    }
+
+    public Long countDoctorBookingsStatusComplete(UUID doctorId) {
+       return bookingRepository.countDoctorQueuesByStatus(doctorId, BookingStatus.COMPLETED, BookingStatus.DECLINED);
     }
 }

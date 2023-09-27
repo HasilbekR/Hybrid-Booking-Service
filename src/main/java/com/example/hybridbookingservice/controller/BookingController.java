@@ -3,6 +3,7 @@ package com.example.hybridbookingservice.controller;
 import com.example.hybridbookingservice.dto.booking.*;
 import com.example.hybridbookingservice.dto.request.ExchangeDataDto;
 import com.example.hybridbookingservice.dto.response.StandardResponse;
+import com.example.hybridbookingservice.dto.response.Status;
 import com.example.hybridbookingservice.entity.booking.BookingEntity;
 import com.example.hybridbookingservice.exceptions.RequestValidationException;
 import com.example.hybridbookingservice.service.booking.BookingService;
@@ -100,5 +101,29 @@ public class BookingController {
             @RequestBody ExchangeDataDto exchangeDataDto
     ){
         return bookingService.getWorkingDaysOfDoctor(UUID.fromString(exchangeDataDto.getSource()));
+    }
+
+    @GetMapping("/count-doctor-bookings-status-active")
+    public StandardResponse<Long> countDoctorBookingsStatusActive(
+            @RequestBody ExchangeDataDto exchangeDataDto
+    ) {
+        return StandardResponse.<Long>
+                builder()
+                .status(Status.SUCCESS)
+                .message("Doctor active bookings count")
+                .data(bookingService.countDoctorBookingsStatusActive(UUID.fromString(exchangeDataDto.getSource())))
+                .build();
+    }
+
+    @GetMapping("/count-doctor-bookings-status-complete")
+    public StandardResponse<Long> countDoctorBookingsStatusComplete(
+            @RequestBody ExchangeDataDto exchangeDataDto
+    ) {
+        return StandardResponse.<Long>
+                        builder()
+                .status(Status.SUCCESS)
+                .message("Doctor active bookings count")
+                .data(bookingService.countDoctorBookingsStatusComplete(UUID.fromString(exchangeDataDto.getSource())))
+                .build();
     }
 }
