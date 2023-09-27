@@ -72,26 +72,28 @@ public class QueueService {
         queueEntity.setQueueNumber(newQueueNumber);
         queueEntity.setQueueDate(currentDate);
         queueEntity.setQueueEntityStatus(QueueEntityStatus.ACTIVE);
+        queueEntity.setCreatedDate(LocalDateTime.now()); // Set the createdDate here
         queueRepository.save(queueEntity);
 
-        List<QueueResultForFront> queueResultForFrontList = new ArrayList<>();
         // Prepare the response
+        QueueResultForFront queueResult = QueueResultForFront.builder()
+                .userName(user.getName())
+                .doctorName(doctor.getFullName())
+                .queueCreatedDate(String.valueOf(queueEntity.getCreatedDate()))
+                .queueCreatedTime(queueEntity.getCreatedDate() != null ? queueEntity.getCreatedDate().toLocalTime().toString() : null)
+                .roomNumber(doctor.getRoomNumber())
+                .specialty(doctor.getSpecialty())
+                .address(hospitalAddress)
+                .queueNumber(String.valueOf(newQueueNumber)) // Include the queue number in the response
+                .build();
 
         return StandardResponse.<QueueResultForFront>builder()
                 .status(Status.SUCCESS)
                 .message("Queue information")
-                .data(QueueResultForFront.builder()
-                        .userName(user.getName())
-                        .doctorName(doctor.getFullName())
-                        .queueCreatedDate(String.valueOf(queueEntity.getCreatedDate()))
-                        .queueCreatedTime(queueEntity.getCreatedDate().toLocalTime().toString())
-                        .roomNumber(doctor.getRoomNumber())
-                        .specialty(doctor.getSpecialty())
-                        .address(hospitalAddress)
-                        .queueNumber(String.valueOf(newQueueNumber)) // Include the queue number in the response
-                        .build())
+                .data(queueResult)
                 .build();
     }
+
 
     private boolean isNewDay(LocalDate currentDate, UUID doctorId) {
         // Check if the queue for the given doctor on the current date already exists
