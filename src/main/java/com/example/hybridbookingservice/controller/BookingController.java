@@ -105,13 +105,13 @@ public class BookingController {
 
     @GetMapping("/count-doctor-bookings-status-active")
     public StandardResponse<Long> countDoctorBookingsStatusActive(
-            @RequestBody ExchangeDataDto exchangeDataDto
+            @RequestParam UUID doctorId
     ) {
         return StandardResponse.<Long>
                 builder()
                 .status(Status.SUCCESS)
                 .message("Doctor active bookings count")
-                .data(bookingService.countDoctorBookingsStatusActive(UUID.fromString(exchangeDataDto.getSource())))
+                .data(bookingService.countDoctorBookingsStatusActive(doctorId))
                 .build();
     }
 
