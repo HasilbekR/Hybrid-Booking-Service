@@ -145,23 +145,13 @@ public class BookingService {
     }
 
     public Long countDoctorBookingsStatusActive(UUID doctorId) {
-        // Define the status values for "IN_PROGRESS" and "SCHEDULED"
-        List<Short> statuses = Arrays.asList(
-                (short) 2, // SCHEDULED
-                (short) 3  // IN_PROGRESS
-        );
+        List<BookingStatus> activeStatuses = Arrays.asList(BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
+        return bookingRepository.countDoctorBookingsStatusActive(doctorId, activeStatuses);
+    }
 
-        // Call the repository method with the predefined statuses
-        return bookingRepository.countDoctorBookingsStatusActive(doctorId, statuses);
-    }
     public Long countDoctorBookingsStatusComplete(UUID doctorId) {
-        // Define the status values for "IN_PROGRESS" and "SCHEDULED"
-        short completeStatus = 3; // You may need to adjust the actual database values
-        short declinedStatus = 4; // You may need to adjust the actual database values
-        List<Short> statuses = new ArrayList<>();
-        statuses.add(completeStatus);
-        statuses.add(declinedStatus);
-        // Call the repository method with the predefined statuses
-        return bookingRepository.countDoctorBookingsStatusActive(doctorId,statuses);
+        List<BookingStatus> activeStatuses = Arrays.asList(BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
+        return bookingRepository.countDoctorBookingsStatusActive(doctorId, activeStatuses);
     }
+
 }

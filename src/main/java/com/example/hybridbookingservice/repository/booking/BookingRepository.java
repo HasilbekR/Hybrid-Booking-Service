@@ -20,6 +20,9 @@ public interface BookingRepository extends JpaRepository<BookingEntity, UUID> {
     List<BookingEntity> getDoctorBookings(UUID doctorId);
 
     @Query("SELECT COUNT(b) FROM bookings b WHERE b.timeSlot.doctorId = :doctorId AND b.status IN :statuses")
-    Long countDoctorBookingsStatusActive(@Param("doctorId") UUID doctorId, @Param("statuses") List<Short> statuses);
+    Long countDoctorBookingsStatusActive(
+            @Param("doctorId") UUID doctorId,
+            @Param("statuses") List<BookingStatus> statuses
+    );
 
 }
