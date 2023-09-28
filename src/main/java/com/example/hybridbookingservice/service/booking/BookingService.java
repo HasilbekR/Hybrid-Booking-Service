@@ -145,19 +145,10 @@ public class BookingService {
     }
 
     public Long countDoctorBookingsStatusActive(UUID doctorId) {
-        // Define the status values for "IN_PROGRESS" and "SCHEDULED"
-        List<Short> statuses = Arrays.asList((short) 1, (short) 2); // Adjust with your actual enum values
-
-        // Call the repository method with the predefined statuses
-        return bookingRepository.countDoctorActiveBookingsByStatus(doctorId, statuses);
+        return bookingRepository.countDoctorQueuesByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
     }
 
     public Long countDoctorBookingsStatusComplete(UUID doctorId) {
-        // Define the status values for "IN_PROGRESS" and "SCHEDULED"
-        List<Short> statuses = Arrays.asList((short) 3, (short) 4); // Adjust with your actual enum values
-
-        // Call the repository method with the predefined statuses
-        return bookingRepository.countDoctorActiveBookingsByStatus(doctorId, statuses);
+        return bookingRepository.countDoctorQueuesByStatus(doctorId, BookingStatus.COMPLETED, BookingStatus.DECLINED);
     }
-
 }
