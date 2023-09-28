@@ -3,6 +3,7 @@ package com.example.hybridbookingservice.controller;
 import com.example.hybridbookingservice.dto.queue.QueueCreateDto;
 import com.example.hybridbookingservice.dto.queue.QueueResultForFront;
 import com.example.hybridbookingservice.dto.queue.QueueUpdateDto;
+import com.example.hybridbookingservice.dto.request.ExchangeDataDto;
 import com.example.hybridbookingservice.dto.response.StandardResponse;
 import com.example.hybridbookingservice.dto.response.Status;
 import com.example.hybridbookingservice.entity.queue.QueueEntity;
@@ -100,28 +101,26 @@ public class QueueController {
         }
     }
 
-    @GetMapping("/count-doctor-queues-status-active")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/count-doctor-queues-status-active")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
     public StandardResponse<Long> countDoctorQueuesStatusActive(
-            @RequestParam UUID doctorId
+            @RequestBody ExchangeDataDto exchangeDataDto
     ) {
-        Long activeQueueAmount = queueService.countDoctorQueuesStatusActive(doctorId);
-        return StandardResponse.<Long>
-                        builder()
+        Long activeQueueAmount = queueService.countDoctorQueuesStatusActive(UUID.fromString(exchangeDataDto.getSource()));
+        return StandardResponse.<Long>builder()
                 .status(Status.SUCCESS)
                 .message("Doctor active queues count")
                 .data(activeQueueAmount)
                 .build();
     }
 
-    @GetMapping("/count-doctor-queues-status-complete")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/count-doctor-queues-status-complete")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
     public StandardResponse<Long> countDoctorQueuesStatusComplete(
-            @RequestParam UUID doctorId
-    ) {
-        Long activeQueueAmount = queueService.countDoctorQueuesStatusComplete(doctorId);
-        return StandardResponse.<Long>
-                        builder()
+            @RequestBody ExchangeDataDto exchangeDataDto
+            ) {
+        Long activeQueueAmount = queueService.countDoctorQueuesStatusComplete(UUID.fromString(exchangeDataDto.getSource()));
+        return StandardResponse.<Long>builder()
                 .status(Status.SUCCESS)
                 .message("Doctor active queues count")
                 .data(activeQueueAmount)

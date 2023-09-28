@@ -104,29 +104,30 @@ public class BookingController {
     }
 
     @PostMapping("/count-doctor-bookings-status-active")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('DOCTOR')")
     public StandardResponse<Long> countDoctorBookingsStatusActive(
             @RequestBody ExchangeDataDto exchangeDataDto
     ) {
-        Long countResult = bookingService.countDoctorBookingsStatusActive(UUID.fromString(exchangeDataDto.getSource()));
+        Long amountActiveBookings = bookingService.countDoctorBookingsStatusActive(UUID.fromString(exchangeDataDto.getSource()));
         return StandardResponse.<Long>
                 builder()
                 .status(Status.SUCCESS)
                 .message("Doctor active bookings count")
-                .data(countResult)
+                .data(amountActiveBookings)
                 .build();
     }
 
-    @GetMapping("/count-doctor-bookings-status-complete")
+    @PostMapping("/count-doctor-bookings-status-complete")
     @PreAuthorize("hasRole('DOCTOR')")
     public StandardResponse<Long> countDoctorBookingsStatusComplete(
             @RequestBody ExchangeDataDto exchangeDataDto
     ) {
+        Long amountCompleteBookings = bookingService.countDoctorBookingsStatusComplete(UUID.fromString(exchangeDataDto.getSource()));
         return StandardResponse.<Long>
                         builder()
                 .status(Status.SUCCESS)
                 .message("Doctor active bookings count")
-                .data(bookingService.countDoctorBookingsStatusComplete(UUID.fromString(exchangeDataDto.getSource())))
+                .data(amountCompleteBookings)
                 .build();
     }
 }
