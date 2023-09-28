@@ -106,9 +106,9 @@ public class BookingController {
     @GetMapping("/count-doctor-bookings-status-active")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<Long> countDoctorBookingsStatusActive(
-            @RequestParam UUID doctorId
+            @RequestBody ExchangeDataDto exchangeDataDto
     ) {
-        Long countResult = bookingService.countDoctorBookingsStatusActive(doctorId);
+        Long countResult = bookingService.countDoctorBookingsStatusActive(UUID.fromString(exchangeDataDto.getSource()));
         return StandardResponse.<Long>
                 builder()
                 .status(Status.SUCCESS)
@@ -118,6 +118,7 @@ public class BookingController {
     }
 
     @GetMapping("/count-doctor-bookings-status-complete")
+    @PreAuthorize("hasRole('DOCTOR')")
     public StandardResponse<Long> countDoctorBookingsStatusComplete(
             @RequestBody ExchangeDataDto exchangeDataDto
     ) {
