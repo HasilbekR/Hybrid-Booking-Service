@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -144,10 +145,10 @@ public class BookingService {
     }
 
     public Long countDoctorBookingsStatusActive(UUID doctorId) {
-       return bookingRepository.countDoctorQueuesByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
+        return bookingRepository.countDoctorQueuesByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
     }
 
     public Long countDoctorBookingsStatusComplete(UUID doctorId) {
-       return bookingRepository.countDoctorQueuesByStatus(doctorId, BookingStatus.COMPLETED, BookingStatus.DECLINED);
+        return bookingRepository.countDoctorQueuesByStatus(doctorId, BookingStatus.SCHEDULED, BookingStatus.DECLINED);
     }
 }

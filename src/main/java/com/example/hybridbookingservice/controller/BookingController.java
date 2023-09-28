@@ -108,11 +108,12 @@ public class BookingController {
     public StandardResponse<Long> countDoctorBookingsStatusActive(
             @RequestParam UUID doctorId
     ) {
+        Long countResult = bookingService.countDoctorBookingsStatusActive(doctorId);
         return StandardResponse.<Long>
                 builder()
                 .status(Status.SUCCESS)
                 .message("Doctor active bookings count")
-                .data(bookingService.countDoctorBookingsStatusActive(doctorId))
+                .data(countResult)
                 .build();
     }
 

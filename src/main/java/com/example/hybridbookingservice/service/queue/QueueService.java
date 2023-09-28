@@ -39,36 +39,27 @@ public class QueueService {
     private final ModelMapper modelMapper;
 
     public StandardResponse<QueueResultForFront> addQueue(QueueCreateDto queueCreateDto, BindingResult bindingResult) {
-        // Check for validation errors
         if (bindingResult.hasErrors()) {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             throw new RequestValidationException(allErrors);
         }
 
-        // Retrieve user and doctor details
         UserDetailsForQueue user = userService.findUser(queueCreateDto.getUserId());
         DoctorDetailsForBooking doctor = userService.findDoctor(queueCreateDto.getDoctorId());
 
-        // Retrieve hospital address
         String hospitalAddress = userService.findHospitalAddress(doctor.getHospitalId());
 
-        // Create and save the queue entity
         LocalDate currentDate = LocalDate.now();
         QueueEntity queueEntity = modelMapper.map(queueCreateDto, QueueEntity.class);
 
-        // Get the maximum queue number for the current date and doctor
         Optional<Long> maxQueueNumber = queueRepository.findMaxQueueNumberByQueueDateAndDoctorId(currentDate, queueCreateDto.getDoctorId());
 
-        // Calculate the new queue number
         long newQueueNumber = maxQueueNumber.orElse(0L) + 1;
 
         queueEntity.setQueueNumber(newQueueNumber);
         queueEntity.setQueueDate(currentDate);
         queueEntity.setQueueEntityStatus(QueueEntityStatus.ACTIVE);
         queueRepository.save(queueEntity);
-
-        List<QueueResultForFront> queueResultForFrontList = new ArrayList<>();
-        // Prepare the response
 
         return StandardResponse.<QueueResultForFront>builder()
                 .status(Status.SUCCESS)
@@ -81,7 +72,7 @@ public class QueueService {
                         .roomNumber(doctor.getRoomNumber())
                         .specialty(doctor.getSpecialty())
                         .address(hospitalAddress)
-                        .queueNumber(String.valueOf(newQueueNumber)) // Include the queue number in the response
+                        .queueNumber(String.valueOf(newQueueNumber))
                         .build())
                 .build();
     }
@@ -121,8 +112,12 @@ public class QueueService {
                 .build();
     }
 
-    public Optional<QueueEntity> getActiveQueueByUserIdAndStatusIsNull(UUID userId) {
-        return queueRepository.findByUserIdAndQueueEntityStatusIsNull(userId);
+    public Long countDoctorQueuesStatusActive(UUID doctorId) {
+        return queueRepository.countDoctorQueuesByStatus(doctorId, QueueEntityStatus.ACTIVE);
+    }
+
+    public Long countDoctorQueuesStatusComplete(UUID doctorId) {
+        return queueRepository.countDoctorQueuesByStatus(doctorId, QueueEntityStatus.COMPLETED);
     }
 
     @Transactional

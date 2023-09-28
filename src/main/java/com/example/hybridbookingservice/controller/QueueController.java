@@ -23,6 +23,7 @@ import java.util.UUID;
 public class QueueController {
 
     private final QueueService queueService;
+
     @PostMapping("/add-queue")
     @PreAuthorize(value = "hasRole('ADMIN')")
     public StandardResponse<QueueResultForFront> addQueue(
@@ -30,11 +31,8 @@ public class QueueController {
             @Valid @RequestBody QueueCreateDto queueCreateDto,
             BindingResult bindingResult
     ) {
-        return StandardResponse.<QueueResultForFront>builder()
-                .status(Status.SUCCESS)
-                .message("Queue successfully added")
-                .data(queueService.addQueue(queueCreateDto, bindingResult).getData())
-                .build();
+        return queueService.addQueue(queueCreateDto, bindingResult);
+
     }
 
     @PostMapping("/edit-queue-information")
@@ -46,7 +44,7 @@ public class QueueController {
             BindingResult bindingResult
     ) {
         return StandardResponse.<QueueEntity>
-                builder()
+                        builder()
                 .status(Status.SUCCESS)
                 .message("Queue information successfully updated")
                 .data(queueService.editQueueInformation(queueId, queueUpdateDto, bindingResult).getData())
@@ -60,7 +58,7 @@ public class QueueController {
             @RequestParam UUID queueId
     ) {
         return StandardResponse.<QueueEntity>
-                builder()
+                        builder()
                 .status(Status.SUCCESS)
                 .message("Queue information by id")
                 .data(queueService.getById(queueId).getData())
@@ -74,7 +72,7 @@ public class QueueController {
             @RequestParam UUID queueId
     ) {
         return StandardResponse.<QueueEntity>
-                builder()
+                        builder()
                 .status(Status.SUCCESS)
                 .message("cancelled queue")
                 .data(queueService.cancelQueue(queueId).getData())
@@ -102,6 +100,32 @@ public class QueueController {
         }
     }
 
+    @GetMapping("/count-doctor-queues-status-active")
+    @PreAuthorize("hasRole('ADMIN')")
+    public StandardResponse<Long> countDoctorQueuesStatusActive(
+            @RequestParam UUID doctorId
+    ) {
+        Long activeQueueAmount = queueService.countDoctorQueuesStatusActive(doctorId);
+        return StandardResponse.<Long>
+                        builder()
+                .status(Status.SUCCESS)
+                .message("Doctor active queues count")
+                .data(activeQueueAmount)
+                .build();
+    }
 
+    @GetMapping("/count-doctor-queues-status-complete")
+    @PreAuthorize("hasRole('ADMIN')")
+    public StandardResponse<Long> countDoctorQueuesStatusComplete(
+            @RequestParam UUID doctorId
+    ) {
+        Long activeQueueAmount = queueService.countDoctorQueuesStatusComplete(doctorId);
+        return StandardResponse.<Long>
+                        builder()
+                .status(Status.SUCCESS)
+                .message("Doctor active queues count")
+                .data(activeQueueAmount)
+                .build();
+    }
 
 }
