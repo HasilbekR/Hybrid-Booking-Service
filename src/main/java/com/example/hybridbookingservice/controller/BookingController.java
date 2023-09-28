@@ -103,7 +103,7 @@ public class BookingController {
         return bookingService.getWorkingDaysOfDoctor(UUID.fromString(exchangeDataDto.getSource()));
     }
 
-    @GetMapping("/count-doctor-bookings-status-active")
+    @PostMapping("/count-doctor-bookings-status-active")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<Long> countDoctorBookingsStatusActive(
             @RequestBody ExchangeDataDto exchangeDataDto
