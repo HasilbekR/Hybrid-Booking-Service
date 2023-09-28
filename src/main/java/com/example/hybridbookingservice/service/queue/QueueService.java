@@ -86,6 +86,7 @@ public class QueueService {
                 .build();
     }
 
+
     public StandardResponse<QueueEntity> editQueueInformation(UUID queueId, QueueUpdateDto queueUpdateDto, BindingResult bindingResult) {
         validateBindingResult(bindingResult);
 
