@@ -17,6 +17,7 @@ import java.util.UUID;
 @Builder
 public class BookingEntity extends BaseEntity {
     private UUID userId;
+    @Enumerated(EnumType.STRING)
     private BookingStatus status;
     @OneToOne
     private TimeSlot timeSlot;
