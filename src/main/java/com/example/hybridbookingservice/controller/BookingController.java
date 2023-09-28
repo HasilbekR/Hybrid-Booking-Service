@@ -106,7 +106,7 @@ public class BookingController {
     @GetMapping("/count-doctor-bookings-status-active")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<Long> countDoctorBookingsStatusActive(
-            @RequestParam(name = "doctorId") UUID doctorId
+            @RequestParam UUID doctorId
     ) {
         Long countResult = bookingService.countDoctorBookingsStatusActive(doctorId);
         return StandardResponse.<Long>
