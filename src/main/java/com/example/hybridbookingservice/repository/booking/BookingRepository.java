@@ -19,7 +19,7 @@ public interface BookingRepository extends JpaRepository<BookingEntity, UUID> {
     @Query(value = "select b from bookings b where b.timeSlot.doctorId = ?1")
     List<BookingEntity> getDoctorBookings(UUID doctorId);
 
-    @Query(value = "SELECT SUM(CASE WHEN b.status = :status1 OR b.status = :status2 THEN 1 ELSE 0 END) FROM timeslots t INNER JOIN bookings b ON t.id = b.timeSlot.id WHERE t.doctorId = :doctorId")
+    @Query(value = "SELECT SUM(CASE WHEN b.status = :status1 OR b.status = :status2 THEN 1 ELSE 0 END) FROM timeslots t INNER JOIN bookings b ON t.id = b.timeSlot.id WHERE t.doctorId = ?1")
     Long countDoctorBookingsByStatus(@Param("doctorId") UUID doctorId, @Param("status1") BookingStatus status1, @Param("status2") BookingStatus status2);
 
 }
