@@ -145,10 +145,10 @@ public class BookingService {
     }
 
     public Long countDoctorBookingsStatusActive(UUID doctorId) {
-        return bookingRepository.countDoctorQueuesByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
+        return bookingRepository.countDoctorQueuesByStatus(doctorId);
     }
 
     public Long countDoctorBookingsStatusComplete(UUID doctorId) {
-        return bookingRepository.countDoctorQueuesByStatus(doctorId, BookingStatus.SCHEDULED, BookingStatus.DECLINED);
+        return bookingRepository.countDoctorQueuesByStatus(doctorId);
     }
 }
