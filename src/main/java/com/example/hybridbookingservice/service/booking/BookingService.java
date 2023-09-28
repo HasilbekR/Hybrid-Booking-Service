@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -145,13 +146,13 @@ public class BookingService {
 
     public Long countDoctorBookingsStatusActive(UUID doctorId) {
         // Define the status values for "IN_PROGRESS" and "SCHEDULED"
-        short inProgressStatus = 1; // You may need to adjust the actual database values
-        short scheduledStatus = 2; // You may need to adjust the actual database values
-        List<Short> statuses = new ArrayList<>();
-        statuses.add(inProgressStatus);
-        statuses.add(scheduledStatus);
+        List<Short> statuses = Arrays.asList(
+                (short) 2, // SCHEDULED
+                (short) 3  // IN_PROGRESS
+        );
+
         // Call the repository method with the predefined statuses
-        return bookingRepository.countDoctorActiveBookingsByStatus(doctorId, statuses);
+        return bookingRepository.countDoctorBookingsStatusActive(doctorId, statuses);
     }
     public Long countDoctorBookingsStatusComplete(UUID doctorId) {
         // Define the status values for "IN_PROGRESS" and "SCHEDULED"
@@ -161,6 +162,6 @@ public class BookingService {
         statuses.add(completeStatus);
         statuses.add(declinedStatus);
         // Call the repository method with the predefined statuses
-        return bookingRepository.countDoctorActiveBookingsByStatus(doctorId,statuses);
+        return bookingRepository.countDoctorBookingsStatusActive(doctorId,statuses);
     }
 }
