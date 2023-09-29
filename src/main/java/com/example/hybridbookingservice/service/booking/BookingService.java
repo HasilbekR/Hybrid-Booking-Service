@@ -18,10 +18,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -145,11 +142,17 @@ public class BookingService {
     }
 
     public Long countDoctorBookingsStatusActive(UUID doctorId) {
-        return bookingRepository.countDoctorBookingsByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
+        Optional<DoctorDetailsForBooking> doctor = Optional.ofNullable(Optional.ofNullable(userService.findDoctor(doctorId))
+                .orElseThrow(() -> new DataNotFoundException("Doctor not found")));
+        return bookingRepository.countDoctorBookingsByStatus(doctor.get().getId(), BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
 
     }
 
     public Long countDoctorBookingsStatusComplete(UUID doctorId) {
         return bookingRepository.countDoctorBookingsByStatus(doctorId, BookingStatus.COMPLETED, BookingStatus.DECLINED);
+    }
+
+    public List<BookingEntity> getDoctorBookingsStatusActive(UUID doctorId) {
+        return bookingRepository.getDoctorBookingsByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
     }
 }

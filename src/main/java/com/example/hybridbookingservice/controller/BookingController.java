@@ -104,7 +104,7 @@ public class BookingController {
     }
 
     @PostMapping("/count-doctor-bookings-status-active")
-    @PreAuthorize("hasRole('DOCTOR')")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
     public StandardResponse<Long> countDoctorBookingsStatusActive(
             @RequestBody ExchangeDataDto exchangeDataDto
     ) {
@@ -118,7 +118,7 @@ public class BookingController {
     }
 
     @PostMapping("/count-doctor-bookings-status-complete")
-    @PreAuthorize("hasRole('DOCTOR')")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
     public StandardResponse<Long> countDoctorBookingsStatusComplete(
             @RequestBody ExchangeDataDto exchangeDataDto
     ) {
@@ -128,6 +128,20 @@ public class BookingController {
                 .status(Status.SUCCESS)
                 .message("Doctor active bookings count")
                 .data(amountCompleteBookings)
+                .build();
+    }
+
+    @PostMapping("/get-doctor-bookings-status-active")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
+    public StandardResponse<BookingEntity> getDoctorBookingsStatusActive(
+            @RequestBody ExchangeDataDto exchangeDataDto
+    ) {
+        List<BookingEntity> doctorBookingsStatusActive = bookingService.getDoctorBookingsStatusActive(UUID.fromString(exchangeDataDto.getSource()));
+        return StandardResponse.<BookingEntity>
+                builder()
+                .status(Status.SUCCESS)
+                .message("Doctor active bookings")
+                .data((BookingEntity) doctorBookingsStatusActive)
                 .build();
     }
 }
