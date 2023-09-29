@@ -142,9 +142,11 @@ public class BookingService {
     }
 
     public Long countDoctorBookingsStatusActive(UUID doctorId) {
-        Optional<DoctorDetailsForBooking> doctor = Optional.ofNullable(Optional.ofNullable(userService.findDoctor(doctorId))
-                .orElseThrow(() -> new DataNotFoundException("Doctor not found")));
-        return bookingRepository.countDoctorBookingsByStatus(doctor.get().getId(), BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
+        DoctorDetailsForBooking doctor = userService.findDoctor(doctorId);
+        if (doctor==null) {
+            throw new DataNotFoundException("Doctor not found");
+        }
+        return bookingRepository.countDoctorBookingsByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
 
     }
 
