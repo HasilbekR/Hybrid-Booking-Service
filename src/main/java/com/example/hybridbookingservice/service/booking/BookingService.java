@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -146,15 +147,22 @@ public class BookingService {
         if (doctor==null) {
             throw new DataNotFoundException("Doctor not found");
         }
-        return bookingRepository.countDoctorBookingsByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
+        return bookingRepository.countDoctorBookingsByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED)
+                .orElseThrow(() -> new DataNotFoundException("Doctor not found"));
 
     }
-
     public Long countDoctorBookingsStatusComplete(UUID doctorId) {
-        return bookingRepository.countDoctorBookingsByStatus(doctorId, BookingStatus.COMPLETED, BookingStatus.DECLINED);
+        return bookingRepository.countDoctorBookingsByStatus(doctorId, BookingStatus.COMPLETED, BookingStatus.DECLINED)
+                .orElseThrow(() -> new DataNotFoundException("Doctor not found"));
     }
 
     public List<BookingEntity> getDoctorBookingsStatusActive(UUID doctorId) {
-        return bookingRepository.getDoctorBookingsByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED);
+        return bookingRepository.getDoctorBookingsByStatus(doctorId, BookingStatus.IN_PROGRESS, BookingStatus.SCHEDULED)
+                .orElseThrow(() -> new DataNotFoundException("Doctor not found"));
+    }
+
+    public List<BookingEntity> getDoctorBookingsStatusCompleted(UUID doctorId) {
+        return bookingRepository.getDoctorBookingsByStatus(doctorId, BookingStatus.COMPLETED, BookingStatus.DECLINED)
+                .orElseThrow(() -> new DataNotFoundException("Doctor not found"));
     }
 }

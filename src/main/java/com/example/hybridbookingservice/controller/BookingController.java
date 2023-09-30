@@ -144,4 +144,19 @@ public class BookingController {
                 .data((BookingEntity) doctorBookingsStatusActive)
                 .build();
     }
+
+    @PostMapping("/get-doctor-bookings-status-complete")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
+    public StandardResponse<BookingEntity> getDoctorBookingsStatusComplete(
+            @RequestBody ExchangeDataDto exchangeDataDto
+    ) {
+        List<BookingEntity> doctorBookingsStatusCompleted = bookingService.getDoctorBookingsStatusCompleted(UUID.fromString(exchangeDataDto.getSource()));
+        return StandardResponse.<BookingEntity>
+                builder()
+                .status(Status.SUCCESS)
+                .message("Doctor bookings status completed")
+                .data((BookingEntity) doctorBookingsStatusCompleted)
+                .build();
+    }
+
 }
