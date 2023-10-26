@@ -19,11 +19,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQL92Dialect
 
 services:
-  get-user-id : https://USER-SERVICE/user/send-id
-  get-doctor : https://USER-SERVICE/user/send-doctor
-  get-user : https://USER-SERVICE/user/send-user
-  get-user-email : https://USER-SERVICE/user/send-email
-  get-hospital-address : https://HOSPITAL-SERVICE/hospital/send-address
+  get-user-id : http://USER-SERVICE/user/send-id
+  get-doctor : http://USER-SERVICE/user/send-doctor
+  get-user : http://USER-SERVICE/user/send-user
+  get-user-email : http://USER-SERVICE/user/send-email
+  get-hospital-address : http://HOSPITAL-SERVICE/hospital/send-address
 
 
 eureka:
