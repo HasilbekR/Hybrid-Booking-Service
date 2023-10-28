@@ -30,7 +30,7 @@ services:
 eureka:
   client:
     service-url:
-      default-url: ${EUREKA_URI:http://127.0.0.1:8761/eureka/}
+      defaultUrl: ${EUREKA_URI:https://127.0.0.1:8761/eureka/}
     instance:
       preferIpAddress: true
 
