@@ -8,7 +8,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/hybrid_booking_db
     username: postgres
-    password: 1
+    password: 1234
   jpa:
     hibernate:
       ddl-auto: update
@@ -29,7 +29,7 @@ services:
 eureka:
   client:
     service-url:
-      defaultUrl: ${EUREKA_URI:https://127.0.0.1:8761/eureka/}
+      defaultUrl: ${EUREKA_URI:https://164.92.206.217:8761/eureka/}
     instance:
       preferIpAddress: true
 
