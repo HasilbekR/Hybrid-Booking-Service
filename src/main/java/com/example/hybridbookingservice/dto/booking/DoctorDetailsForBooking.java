@@ -14,5 +14,6 @@ public class DoctorDetailsForBooking {
     private String fullName;
     private String roomNumber;
     private String specialty;
+    private String gender;
     private UUID hospitalId;
 }

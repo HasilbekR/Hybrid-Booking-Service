@@ -17,6 +17,7 @@ public class BookingResultWithDoctor {
     private LocalTime bookingTime;
     private String weekDay;
     private String doctorName;
+    private String doctorGender;
     private String roomNumber;
     private String address;
 }

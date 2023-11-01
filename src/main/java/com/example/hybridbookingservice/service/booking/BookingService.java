@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Book;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -95,6 +94,7 @@ public class BookingService {
                     .bookingDay(userUpcomingBooking.getTimeSlot().getBookingDay())
                     .bookingTime(userUpcomingBooking.getTimeSlot().getBookingTime())
                     .doctorName(doctor.getFullName())
+                    .doctorGender(doctor.getGender())
                     .roomNumber(doctor.getRoomNumber())
                     .address(hospitalAddress)
                     .weekDay(userUpcomingBooking.getTimeSlot().getBookingDay().getDayOfWeek().toString())
