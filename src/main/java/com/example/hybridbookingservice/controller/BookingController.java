@@ -88,7 +88,7 @@ public class BookingController {
         return bookingService.delete(bookingUpdateDto, principal);
     }
     @PostMapping("/create-time-slots")
-//    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
     public StandardResponse<String> createTimeSlots(
             @RequestBody DoctorAvailability doctorAvailability,
             @RequestParam(defaultValue = "30") Integer slotDuration,
